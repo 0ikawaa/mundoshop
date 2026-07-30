@@ -48,6 +48,85 @@ export function texturaMadera(THREE, rand, baseHex, veta, repeticiones = [1, 1])
   return tex;
 }
 
+/**
+ * Mapa de normales derivado de una textura de canvas.
+ *
+ * Es lo que hace que la veta deje de ser un dibujo y pase a ser relieve: sin
+ * esto la madera es una calcomania pegada sobre un plano perfecto y se nota
+ * apenas la luz roza la superficie. Con el mapa, cada linea de la veta hunde y
+ * levanta la normal, la luz la agarra de costado y aparece el poro.
+ *
+ * La pendiente sale de un Sobel sobre la luminancia: donde la imagen se
+ * oscurece rapido, hay un surco.
+ */
+export function mapaNormal(THREE, textura, fuerza = 1) {
+  const src = textura.image;
+  const w = src.width, h = src.height;
+  const datos = src.getContext('2d').getImageData(0, 0, w, h).data;
+  const luz = new Float32Array(w * h);
+  for (let i = 0; i < w * h; i++) {
+    luz[i] = (datos[i * 4] * 0.299 + datos[i * 4 + 1] * 0.587 + datos[i * 4 + 2] * 0.114) / 255;
+  }
+  const en = (x, y) => luz[((y + h) % h) * w + ((x + w) % w)];
+
+  const salida = document.createElement('canvas');
+  salida.width = w; salida.height = h;
+  const ctx = salida.getContext('2d');
+  const img = ctx.createImageData(w, h), d = img.data;
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const dx = (en(x + 1, y - 1) + 2 * en(x + 1, y) + en(x + 1, y + 1))
+               - (en(x - 1, y - 1) + 2 * en(x - 1, y) + en(x - 1, y + 1));
+      const dy = (en(x - 1, y + 1) + 2 * en(x, y + 1) + en(x + 1, y + 1))
+               - (en(x - 1, y - 1) + 2 * en(x, y - 1) + en(x + 1, y - 1));
+      const nx = -dx * fuerza, ny = -dy * fuerza;
+      const l = Math.hypot(nx, ny, 1);
+      const i = (y * w + x) * 4;
+      d[i] = Math.round((nx / l * 0.5 + 0.5) * 255);
+      d[i + 1] = Math.round((ny / l * 0.5 + 0.5) * 255);
+      d[i + 2] = Math.round((1 / l * 0.5 + 0.5) * 255);
+      d[i + 3] = 255;
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+
+  const tex = new THREE.CanvasTexture(salida);
+  // Un mapa de normales son tres numeros, no un color: si se lo marca como sRGB
+  // el navegador le aplica la curva y las normales salen torcidas.
+  tex.colorSpace = THREE.NoColorSpace;
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.copy(textura.repeat);
+  return tex;
+}
+
+/**
+ * Ondulacion suave de una superficie lacada, tipo cascara de naranja.
+ *
+ * Un frente laqueado nunca es un plano optico: al pintarlo queda una onda muy
+ * larga y muy baja que no se ve como textura, se ve porque el reflejo se
+ * mueve. Es la diferencia entre una puerta y un rectangulo de color.
+ *
+ * Devuelve el mapa de normales ya armado, para usar con un normalScale chico.
+ */
+export function texturaCascara(THREE, rand, repeticiones = [3, 8]) {
+  const c = document.createElement('canvas');
+  c.width = c.height = 256;
+  const x = c.getContext('2d');
+  x.fillStyle = '#808080'; x.fillRect(0, 0, 256, 256);
+  for (let i = 0; i < 150; i++) {
+    const cx = rand() * 256, cy = rand() * 256, r = 14 + rand() * 34;
+    const tono = rand() < 0.5 ? 255 : 0;
+    const g = x.createRadialGradient(cx, cy, 0, cx, cy, r);
+    g.addColorStop(0, `rgba(${tono},${tono},${tono},0.16)`);
+    g.addColorStop(1, `rgba(${tono},${tono},${tono},0)`);
+    x.fillStyle = g;
+    x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.fill();
+  }
+  const base = new THREE.CanvasTexture(c);
+  base.repeat.set(repeticiones[0], repeticiones[1]);
+  return mapaNormal(THREE, base, 1.6);
+}
+
 /** Micro-textura mate para frentes lisos: va como roughnessMap. */
 export function texturaGrano(THREE, rand, repeticiones = [6, 24]) {
   const c = document.createElement('canvas');
@@ -65,9 +144,112 @@ export function texturaGrano(THREE, rand, repeticiones = [6, 24]) {
   return tex;
 }
 
+/**
+ * Bisel de los cantos, en metros. Un tablero de melamina no termina en arista
+ * viva: el canto trae su cinta y queda un radio de un milimetro largo.
+ *
+ * Parece un detalle de maniatico y es, de lejos, lo que mas separa un render de
+ * una foto. Una arista perfecta a 90 grados no puede devolver un brillo: pasa
+ * de una cara a la otra sin transicion y el ojo lee "esto es una caja de
+ * computadora". Un canto de milimetro y medio agarra una linea de luz en todo
+ * el borde y el mueble empieza a parecer un objeto.
+ *
+ * Se paga en triangulos (unos 430 por caja contra 12), asi que los modelos que
+ * se exportan a AR lo apagan con setBisel(0): ahi el archivo viaja por datos
+ * moviles y el telefono lo mira a un metro.
+ */
+let BISEL = 0.0015;
+export function setBisel(metros) { BISEL = Math.max(0, metros || 0); }
+
+const CACHE_GEO = new Map();
+
+/**
+ * Caja de cantos redondeados.
+ *
+ * Se arma cara por cara con una grilla que concentra los vertices en el borde,
+ * y cada vertice se proyecta sobre la superficie redondeada: se recorta el
+ * punto contra la caja interior (la caja menos el bisel) y se lo empuja a
+ * distancia `b` de ese recorte. Como el recorte es continuo, las caras vecinas
+ * caen exactamente en el mismo lugar y no queda ninguna costura abierta; cada
+ * cara resuelve su mitad del canto y se encuentran a 45 grados.
+ *
+ * No se usa una subdivision pareja (que seria mas corta de escribir) porque el
+ * bisel mide milimetros sobre tableros de metros: repartiendo los vertices por
+ * igual, la banda redondeada se comeria medio panel.
+ */
+export function geometriaCaja(THREE, w, h, d, bisel = BISEL) {
+  const b = Math.min(bisel, w / 2.2, h / 2.2, d / 2.2);
+  if (!(b > 0)) return new THREE.BoxGeometry(w, h, d);
+
+  const clave = [w, h, d, b].map(v => v.toFixed(5)).join('|');
+  const guardada = CACHE_GEO.get(clave);
+  if (guardada) return guardada;
+
+  const K = 2;                                   // pasos de arco por canto
+  const dim = [w, h, d];
+  const medio = dim.map(v => v / 2);
+  const dentro = medio.map(v => v - b);
+  const muestras = dim.map((L) => {
+    const f = L / 2 - b, s = [];
+    for (let k = K; k >= 0; k--) s.push(-f - b * k / K);
+    s.push(0);
+    for (let k = 0; k <= K; k++) s.push(f + b * k / K);
+    return s;
+  });
+
+  // [eje normal, signo, eje horizontal, eje vertical]
+  const CARAS = [
+    [2, 1, 0, 1], [2, -1, 0, 1],
+    [0, 1, 2, 1], [0, -1, 2, 1],
+    [1, 1, 0, 2], [1, -1, 0, 2],
+  ];
+  const pos = [], nor = [], uvs = [], idx = [];
+  const p = [0, 0, 0], c = [0, 0, 0];
+  const sujetar = (v, lim) => Math.max(-lim, Math.min(lim, v));
+
+  for (const [a, s, eu, ev] of CARAS) {
+    const su = muestras[eu], sv = muestras[ev];
+    const base = pos.length / 3;
+    for (let j = 0; j < sv.length; j++) {
+      for (let i = 0; i < su.length; i++) {
+        p[a] = s * medio[a]; p[eu] = su[i]; p[ev] = sv[j];
+        c[a] = s * dentro[a];
+        c[eu] = sujetar(su[i], dentro[eu]);
+        c[ev] = sujetar(sv[j], dentro[ev]);
+        const dx = p[0] - c[0], dy = p[1] - c[1], dz = p[2] - c[2];
+        const len = Math.hypot(dx, dy, dz) || 1;
+        const nx = dx / len, ny = dy / len, nz = dz / len;
+        pos.push(c[0] + nx * b, c[1] + ny * b, c[2] + nz * b);
+        nor.push(nx, ny, nz);
+        uvs.push((su[i] + medio[eu]) / dim[eu], (sv[j] + medio[ev]) / dim[ev]);
+      }
+    }
+    // El orden de los triangulos sale de la mano del par de ejes elegido: si
+    // (eu x ev) apunta al lado contrario que la cara, se invierte.
+    const cruz = (eu + 1) % 3 === ev ? 1 : -1;
+    const derecha = cruz * s > 0;
+    for (let j = 0; j < sv.length - 1; j++) {
+      for (let i = 0; i < su.length - 1; i++) {
+        const v00 = base + j * su.length + i, v10 = v00 + 1;
+        const v01 = v00 + su.length, v11 = v01 + 1;
+        if (derecha) idx.push(v00, v10, v11, v00, v11, v01);
+        else idx.push(v00, v11, v10, v00, v01, v11);
+      }
+    }
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  geo.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+  geo.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+  geo.setIndex(idx);
+  CACHE_GEO.set(clave, geo);
+  return geo;
+}
+
 /** Caja con nombre, material y posicion. Devuelve la malla. */
 export function hacerCaja(THREE, padre, nombre, w, h, d, material, x, y, z) {
-  const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), material);
+  const m = new THREE.Mesh(geometriaCaja(THREE, w, h, d), material);
   m.name = nombre;
   m.position.set(x, y, z);
   m.castShadow = true; m.receiveShadow = true;
@@ -142,18 +324,28 @@ export function encuadrador(THREE, stage, grupo, alto) {
   };
 }
 
-/** Ambiente difuso de dormitorio: da reflejos suaves sin cargar un HDR. */
-export function ambienteDormitorio(THREE, stage, intensidad = 0.55) {
+/**
+ * Ambiente difuso de dormitorio: da reflejos suaves sin cargar un HDR.
+ *
+ * Va bajo a proposito. El mapa de entorno ilumina sin tener en cuenta ninguna
+ * oclusion — le entra la misma luz al frente del ropero que al fondo de un
+ * cajon — asi que subirlo aplana justo lo que el muestreo de cielo del visor se
+ * gana muestra a muestra. Queda como lo que es: el brillo del ambiente sobre
+ * las superficies, no la luz que arma el volumen.
+ */
+export function ambienteDormitorio(THREE, stage, intensidad = 0.22) {
   const escena = stage._scene, render = stage._renderer;
   if (!escena || !render) return null;
   const c = document.createElement('canvas');
   c.width = 512; c.height = 256;
   const g = c.getContext('2d');
   const grad = g.createLinearGradient(0, 0, 0, 256);
-  grad.addColorStop(0, '#f7f4ee');
-  grad.addColorStop(0.48, '#e9e2d6');
-  grad.addColorStop(0.52, '#cdc3b4');
-  grad.addColorStop(1, '#a49a8c');
+  // Casi neutro. Sobre un frente negro casi todo lo que se ve es el reflejo del
+  // ambiente, asi que si el ambiente vira calido el negro sale marron.
+  grad.addColorStop(0, '#f7f6f4');
+  grad.addColorStop(0.48, '#e8e6e2');
+  grad.addColorStop(0.52, '#c9c6c1');
+  grad.addColorStop(1, '#a6a39e');
   g.fillStyle = grad; g.fillRect(0, 0, 512, 256);
   g.fillStyle = 'rgba(255,255,255,0.88)'; g.fillRect(118, 38, 96, 74);   // ventana
   g.fillStyle = 'rgba(120,105,90,0.32)'; g.fillRect(300, 150, 150, 60);  // cama difusa

@@ -65,7 +65,12 @@ http.createServer((req, res) => {
     res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
     return res.end('404 ' + p);
   }
-  res.writeHead(200, { 'Content-Type': TIPOS[path.extname(archivo)] || 'application/octet-stream' });
+  // Sin cache: sin esta cabecera el navegador aplica su heuristica propia y se
+  // queda con el .js viejo, asi que uno edita el visor, recarga y ve lo de antes.
+  res.writeHead(200, {
+    'Content-Type': TIPOS[path.extname(archivo)] || 'application/octet-stream',
+    'Cache-Control': 'no-store'
+  });
   fs.createReadStream(archivo).pipe(res);
 }).listen(PUERTO, '127.0.0.1', () => {
   console.log(`sitio    http://localhost:${PUERTO}`);

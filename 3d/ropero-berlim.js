@@ -14,10 +14,13 @@
  * como mallas aparte en vez de como una cara distinta del mismo box.
  */
 
+import { geometriaCaja, mapaNormal, texturaCascara, ambienteDormitorio } from './comun.js';
+
 export const MEDIDAS = { W: 2.06, H: 1.99, D: 0.385 };
 
 export const COLORES = {
-  negro:   { hex: 0x1d1d1f, rough: 0.68, nombre: 'Negro' },
+  // El negro del frente no es negro: en la foto del producto mide (38,38,38).
+  negro:   { hex: 0x2b2b2d, rough: 0.68, nombre: 'Negro' },
   blanco:  { hex: 0xf2efe9, rough: 0.52, nombre: 'Blanco' },
   castano: { hex: 0x6b4a33, rough: 0.60, nombre: 'Castano' },
   beige:   { hex: 0xd6c8b1, rough: 0.58, nombre: 'Beige' }
@@ -105,13 +108,21 @@ export function construirRopero(THREE, opciones = {}) {
 
   const col = COLORES[color] || COLORES.negro;
 
+  // Color medido sobre la foto de la publicacion: el nogal del mueble real
+  // promedia (120, 92, 72). Antes salia mucho mas naranja de lo que es.
+  const vetaNogal = woodTexture('#7a5c46', '58,42,30');
+
   const mat = {
     nogal: new THREE.MeshStandardMaterial({
-      name: 'nogal_rustico', color: 0xffffff, map: woodTexture('#7f5b3e', '52,33,19'),
+      name: 'nogal_rustico', color: 0xffffff, map: vetaNogal,
+      normalMap: mapaNormal(THREE, vetaNogal, 2.4),
+      normalScale: new THREE.Vector2(0.55, 0.55),
       roughness: 0.58, metalness: 0.04
     }),
     puerta: new THREE.MeshStandardMaterial({
       name: 'mdf_frente', color: col.hex, roughnessMap: grainTexture(),
+      normalMap: texturaCascara(THREE, rand, [4, 10]),
+      normalScale: new THREE.Vector2(0.14, 0.14),
       roughness: col.rough, metalness: 0.05
     }),
     interior: new THREE.MeshStandardMaterial({
@@ -135,7 +146,9 @@ export function construirRopero(THREE, opciones = {}) {
   ropero.name = 'ropero_berlim';
 
   function box(name, w, h, d, material, x, y, z, parent) {
-    const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), material);
+    // geometriaCaja y no BoxGeometry: los cantos van redondeados como los de un
+    // tablero real (ver la nota del bisel en comun.js).
+    const m = new THREE.Mesh(geometriaCaja(THREE, w, h, d), material);
     m.name = name;
     m.position.set(x, y, z);
     m.castShadow = true; m.receiveShadow = true;
@@ -375,6 +388,12 @@ export async function initRoperoBerlim(stage, btn) {
   if (btn) btn.addEventListener('click', toggle);
 
   stage.setObject(ropero);
+  // Mas ambiente que en los muebles claros, y no por gusto: un frente negro
+  // mate no tiene practicamente color propio, casi todo lo que se ve de el es
+  // el reflejo del cuarto. Apagando el ambiente el frente mide (4,4,5) — un
+  // agujero, sin una hoja distinguible de la de al lado. La foto del producto
+  // marca (38,38,38), y para llegar ahi hace falta este medio.
+  ambienteDormitorio(THREE, stage, 0.5);
 
   // ——————————————————————————— encuadre
   // El auto-frame del stage usa la esfera envolvente y deja el mueble muy chico
@@ -432,29 +451,6 @@ export async function initRoperoBerlim(stage, btn) {
   let tocado = false;
   stage._controls && stage._controls.addEventListener('start', () => { tocado = true; });
   new ResizeObserver(() => { if (!tocado) encuadrar(); }).observe(stage);
-
-  // ——————————————————————————— ambiente (dormitorio difuso) para reflejos suaves
-  const scene = stage._scene, renderer = stage._renderer;
-  if (scene && renderer) {
-    const ec = document.createElement('canvas');
-    ec.width = 512; ec.height = 256;
-    const g2 = ec.getContext('2d');
-    const grad = g2.createLinearGradient(0, 0, 0, 256);
-    grad.addColorStop(0, '#f7f4ee');
-    grad.addColorStop(0.48, '#e9e2d6');
-    grad.addColorStop(0.52, '#cdc3b4');
-    grad.addColorStop(1, '#a49a8c');
-    g2.fillStyle = grad; g2.fillRect(0, 0, 512, 256);
-    g2.fillStyle = 'rgba(255,255,255,0.88)'; g2.fillRect(118, 38, 96, 74);   // ventana
-    g2.fillStyle = 'rgba(120,105,90,0.32)'; g2.fillRect(300, 150, 150, 60);  // cama difusa
-    const eqTex = new THREE.CanvasTexture(ec);
-    eqTex.mapping = THREE.EquirectangularReflectionMapping;
-    eqTex.colorSpace = THREE.SRGBColorSpace;
-    const pmrem = new THREE.PMREMGenerator(renderer);
-    scene.environment = pmrem.fromEquirectangular(eqTex).texture;
-    scene.environmentIntensity = 0.55;
-    pmrem.dispose();
-  }
 
   return {
     setColor, setDoors, toggle, colores: COLORES, grupo: ropero,

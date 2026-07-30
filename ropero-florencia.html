@@ -118,6 +118,10 @@
           </button>
           <button class="chip" id="vista-frontal" type="button">Vista frontal</button>
           <button class="chip" id="vista-34" type="button">Vista 3/4</button>
+          <button class="chip" id="foto-3d" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10"/><path d="m3 16 5-5 4 4 3-3 3 3"/><circle cx="8.5" cy="8" r="1.4"/><path d="M19 22v-6M16 19l3 3 3-3"/></svg>
+            Descargar foto
+          </button>
           <span class="pista">Arrastra para girar &middot; scroll para acercar</span>
         </div>
       </div>
@@ -332,7 +336,7 @@
 
 <script src="./3d/three-d-stage.js"></script>
 <script type="module">
-import { montarGaleria, montarLightbox, montarRevelar, montarCarrito } from './assets/tienda.js';
+import { montarGaleria, montarLightbox, montarRevelar, montarCarrito, montarFoto } from './assets/tienda.js';
 import { montarAR } from './3d/ar.js';
 
 const FOTOS = [
@@ -402,6 +406,7 @@ tab3d.addEventListener('click', async () => {
     cargando.remove();
     document.getElementById('vista-frontal').addEventListener('click', api3d.vistaFrontal);
     document.getElementById('vista-34').addEventListener('click', api3d.vistaInicial);
+    montarFoto({ boton: document.getElementById('foto-3d'), stage: document.querySelector('three-d-stage') });
   } catch (e) {
     cargando.innerHTML = '<span>No se pudo cargar la vista 3D. Proba recargar la pagina.</span>';
     console.error(e);

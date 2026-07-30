@@ -14,7 +14,7 @@
  */
 
 import {
-  rng, texturaMadera, texturaGrano, hacerCaja,
+  rng, texturaMadera, texturaGrano, hacerCaja, mapaNormal, texturaCascara,
   encuadrador, ambienteDormitorio, animarBatientes
 } from './comun.js';
 
@@ -43,18 +43,26 @@ export function construirFlorencia(THREE, opciones = {}) {
   const inD = D - 0.03, inZ = -0.012;
 
   const maderaTex = texturaMadera(THREE, rand, '#b08758', '92,62,32', [1, 2]);
+  const interiorTex = texturaMadera(THREE, rand, '#c9b190', '110,82,50', [1, 1]);
 
   const mat = {
     madera: new THREE.MeshStandardMaterial({
-      name: 'roble_rustico', color: 0xffffff, map: maderaTex, roughness: 0.56, metalness: 0.04
+      name: 'roble_rustico', color: 0xffffff, map: maderaTex,
+      normalMap: mapaNormal(THREE, maderaTex, 2.4),
+      normalScale: new THREE.Vector2(0.6, 0.6),
+      roughness: 0.56, metalness: 0.04
     }),
     interior: new THREE.MeshStandardMaterial({
       name: 'roble_interior', color: 0xe8dcc8,
-      map: texturaMadera(THREE, rand, '#c9b190', '110,82,50', [1, 1]),
+      map: interiorTex,
+      normalMap: mapaNormal(THREE, interiorTex, 2.0),
+      normalScale: new THREE.Vector2(0.45, 0.45),
       roughness: 0.7, metalness: 0.03
     }),
     blanco: new THREE.MeshStandardMaterial({
       name: 'laca_blanca', color: 0xf7f6f3, roughnessMap: texturaGrano(THREE, rand, [3, 12]),
+      normalMap: texturaCascara(THREE, rand, [3, 9]),
+      normalScale: new THREE.Vector2(0.18, 0.18),
       roughness: 0.24, metalness: 0.06
     }),
     tirador: new THREE.MeshStandardMaterial({
@@ -284,7 +292,7 @@ export async function initFlorencia(stage, btn) {
 
   stage.setObject(grupo);
   const vistas = encuadrador(THREE, stage, grupo, H);
-  ambienteDormitorio(THREE, stage, 0.5);
+  ambienteDormitorio(THREE, stage, 0.22);
 
   return { grupo, toggle, setDoors: setPuertas, colores: COLORES, setColor: () => true, ...vistas };
 }

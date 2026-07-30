@@ -11,7 +11,7 @@
  */
 
 import {
-  rng, texturaMadera, texturaGrano, hacerCaja,
+  rng, texturaMadera, texturaGrano, hacerCaja, mapaNormal, texturaCascara,
   encuadrador, ambienteDormitorio, animarCorredizas, materialEspejo
 } from './comun.js';
 
@@ -40,14 +40,20 @@ export function construirBariloche(THREE, opciones = {}) {
   const inD = 0.335;
   const inZ = -D / 2 + inD / 2 + 0.012;
 
+  const vetaInterior = texturaMadera(THREE, rand, '#cbb99c', '120,96,66', [1, 2]);
+
   const mat = {
     blanco: new THREE.MeshStandardMaterial({
       name: 'mdp_blanco', color: 0xf4f3f0, roughnessMap: texturaGrano(THREE, rand, [4, 16]),
+      normalMap: texturaCascara(THREE, rand, [3, 9]),
+      normalScale: new THREE.Vector2(0.16, 0.16),
       roughness: 0.52, metalness: 0.03
     }),
     interior: new THREE.MeshStandardMaterial({
       name: 'roble_claro', color: 0xffffff,
-      map: texturaMadera(THREE, rand, '#cbb99c', '120,96,66', [1, 2]),
+      map: vetaInterior,
+      normalMap: mapaNormal(THREE, vetaInterior, 2.2),
+      normalScale: new THREE.Vector2(0.5, 0.5),
       roughness: 0.68, metalness: 0.03
     }),
     aluminio: new THREE.MeshStandardMaterial({
@@ -247,7 +253,7 @@ export async function initBariloche(stage, btn) {
 
   stage.setObject(grupo);
   const vistas = encuadrador(THREE, stage, grupo, H);
-  ambienteDormitorio(THREE, stage, 0.5);
+  ambienteDormitorio(THREE, stage, 0.22);
 
   return {
     grupo, toggle, setDoors: setPuertas, colores: COLORES,

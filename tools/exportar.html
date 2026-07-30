@@ -44,6 +44,7 @@ import * as THREE from 'three';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { USDZExporter } from 'three/addons/exporters/USDZExporter.js';
 
+import { setBisel } from '../3d/comun.js';
 import { construirRopero, COLORES as coloresBerlim } from '../3d/ropero-berlim.js';
 import { construirBariloche, COLORES as coloresBariloche } from '../3d/ropero-bariloche.js';
 import { construirFlorencia, COLORES as coloresFlorencia } from '../3d/ropero-florencia.js';
@@ -53,6 +54,11 @@ const PRODUCTOS = [
   { base: 'ropero-bariloche', construir: construirBariloche, colores: Object.keys(coloresBariloche) },
   { base: 'ropero-florencia', construir: construirFlorencia, colores: Object.keys(coloresFlorencia) },
 ];
+
+// Sin bisel en los cantos: en el visor son los que hacen que el mueble parezca
+// un mueble, pero multiplican por treinta y cinco los triangulos y aca el
+// archivo se baja por datos moviles para mirarlo a un metro de distancia.
+setBisel(0);
 
 const logEl = document.getElementById('log');
 const btn = document.getElementById('run');

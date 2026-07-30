@@ -15,7 +15,10 @@ assets/tienda.js         galeria, lightbox, reveal, barra fija, carrito
 assets/fuentes/          Inter variable, servida desde el propio dominio
 
 3d/three-d-stage.js      web component <three-d-stage>: escena, luces, orbit,
-                         sombra de piso y exportacion OBJ+MTL / GLB
+                         render progresivo, descarga de foto y exportacion
+                         OBJ+MTL / GLB
+3d/comun.js              piezas compartidas: cajas biseladas, texturas y mapas
+                         de normales procedurales, encuadre, animaciones
 3d/ropero-berlim.js      modelo del Berlim en medidas reales (206 x 38,5 x 199 cm)
 3d/ar.js                 lanzador de AR nativo (Quick Look / Scene Viewer)
 3d/models/               GLB y USDZ pre-generados, uno por color
@@ -66,10 +69,85 @@ incluida la gente que nunca la abre.
    renderer, la iluminacion de estudio, los `OrbitControls` y encuadra la camara
    sola segun el bounding box del objeto.
 3. El modulo del producto exporta una funcion `init...(stage, btn)` que espera
-   `await stage.ready`, construye el mueble con `BoxGeometry` en metros y llama a
-   `stage.setObject(grupo)`.
+   `await stage.ready`, construye el mueble con `geometriaCaja` en metros y llama
+   a `stage.setObject(grupo)`.
 
 Cada modelo nuevo es un archivo mas dentro de `3d/`; el stage no se toca.
+
+## El render progresivo
+
+La escena no se dibuja una vez: se dibuja 64 veces (26 en celular) moviendo
+apenas el sol, el cielo, la lente y el pixel, y se promedian los cuadros en un
+par de render targets de media precision. Es integracion Monte Carlo, la misma
+idea de un motor offline, y de ahi salen juntas cuatro cosas que un visor comun
+no tiene:
+
+- **penumbra de verdad** — el sol es un disco, no un punto, asi que la sombra se
+  abre con la distancia en vez de terminar en un borde de cuchillo;
+- **oclusion ambiental correcta** — el cielo se muestrea direccion por direccion
+  *con sombra*; el promedio de todas esas direcciones es, literalmente, la
+  oclusion. No hay pase de AO en pantalla porque no hace falta;
+- **antialias** muy por encima del MSAA, porque cada muestra cae en un punto
+  distinto del pixel;
+- **profundidad de campo** real, con la lente abierta sobre el plano de foco.
+
+Mientras el visitante arrastra se muestra la muestra 0, que es un render comun y
+va a 60 cuadros. Al soltar, la imagen se afina sola en cerca de un segundo y el
+bucle deja de dibujar: converger gasta menos que quedarse girando en vano.
+
+Nadie llama a `invalidar()` a mano. Cada cuadro se calcula una firma barata de la
+camara y de las mallas (posicion, giro, color) y si cambio se reinicia la
+acumulacion, asi que abrir las puertas o cambiar el color se detecta solo.
+
+El tono es Khronos PBR Neutral, el mapeo pensado para fichas de producto: comprime
+las altas luces sin virar los colores. **El fondo no pasa por el tono** — cualquier
+tonemapper convierte el blanco puro en gris, y este visor va embebido en una
+pagina blanca. La escena se dibuja sobre transparente y el color de fondo se
+compone despues, ya en espacio de pantalla.
+
+Dos trampas que costaron caro y estan comentadas en el codigo:
+
+- **No tocar `castShadow` entre muestras.** Cambiar la cantidad de luces con
+  sombra obliga a three a recompilar el shader de todos los materiales: en el
+  Florencia la muestra pasaba de 16 a 290 ms. Sale mucho mas barato dibujar el
+  segundo mapa de sombra siempre.
+- **La camara de sombra del cielo se abre segun la direccion.** Con un encuadre
+  fijo habria que cortar la boveda a unos 45 grados, y ese corte se ve: la
+  penumbra termina en una linea recta sobre el piso.
+
+`stage.foto(escala)` vuelve a renderizar el encuadre actual al doble de tamano y
+baja un PNG. No es una captura de pantalla: es el mismo calculo en grande, asi
+que la imagen que se descarga es mejor que la que se estaba viendo. Es lo que hay
+detras del boton "Descargar foto" de la ficha.
+
+## Colores medidos, no elegidos
+
+Los materiales estan calibrados contra las fotos de la publicacion, que se leen
+pixel a pixel desde el navegador. El nogal del Berlim promedia (120, 92, 72) en
+la foto real y el frente negro (38, 38, 38) neutro; el render arrancaba en
+(135, 90, 49) y (33, 28, 23), o sea naranja y marron. De ahi salieron el color de
+la veta, el negro del frente (que no es negro) y las luces casi neutras: una foto
+de catalogo se toma con luz de estudio equilibrada, y si el render la quiere
+igualar tiene que hacer lo mismo.
+
+## Los cantos
+
+Un tablero de melamina no termina en arista viva: trae su cinta de canto y queda
+un radio de un milimetro largo. Parece un detalle de maniatico y es, de lejos, lo
+que mas separa un render de una foto — una arista perfecta a 90 grados no puede
+devolver un brillo, pasa de una cara a la otra sin transicion y el ojo lee "caja
+de computadora".
+
+`geometriaCaja` en `comun.js` arma la caja con los cantos redondeados: cada cara
+lleva una grilla que concentra los vertices en el borde, y cada vertice se
+proyecta sobre la superficie redondeada recortandolo contra la caja interior. La
+subdivision no es pareja a proposito; el bisel mide milimetros sobre tableros de
+metros, y repartiendo los vertices por igual la banda redondeada se comeria medio
+panel.
+
+Cuesta unos 430 triangulos por caja contra 12, asi que `tools/exportar.html`
+llama a `setBisel(0)` antes de generar los modelos de AR: ese archivo viaja por
+datos moviles y el telefono lo mira a un metro.
 
 ## Modelo: Ropero Berlim
 

@@ -125,6 +125,35 @@ export function montarBarraFija({ barra, referencia }) {
   io.observe(referencia);
 }
 
+/* --- Descargar la foto del visor ------------------------------------------
+   El visor no saca una captura de pantalla: vuelve a renderizar el encuadre al
+   doble de resolucion y con el doble de muestras, o sea que la imagen que se
+   baja es mejor que la que se esta viendo. Tarda unos segundos y por eso el
+   boton avisa; mientras tanto queda deshabilitado, que si no se dispara dos
+   veces y el segundo render pisa al primero. */
+export function montarFoto({ boton, stage }) {
+  if (!boton || !stage) return;
+  const texto = boton.lastChild;
+  const original = texto.textContent;
+  boton.addEventListener('click', async () => {
+    boton.disabled = true;
+    texto.textContent = ' Renderizando…';
+    try {
+      await stage.foto(2, {
+        alAvanzar: (p) => { texto.textContent = ` Renderizando ${Math.round(p * 100)} %`; }
+      });
+    } catch (e) {
+      console.error(e);
+      texto.textContent = ' No se pudo generar';
+      setTimeout(() => { texto.textContent = original; }, 2500);
+      boton.disabled = false;
+      return;
+    }
+    texto.textContent = original;
+    boton.disabled = false;
+  });
+}
+
 /* --- Carrito (maqueta) ----------------------------------------------------
    Todavia no hay checkout: esto solo mantiene el contador coherente para que
    la ficha se vea completa. */
