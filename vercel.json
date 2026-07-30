@@ -6,7 +6,7 @@
     {
       "source": "/3d/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=3600, must-revalidate" }
+        { "key": "Cache-Control", "value": "public, no-cache" }
       ]
     },
     {

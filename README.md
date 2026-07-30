@@ -222,3 +222,14 @@ node tools/servidor.js     # http://localhost:8123
 Sitio estatico sin framework: importar el repo de GitHub en Vercel y dejar
 Framework Preset en **Other**, sin build command y con output directory `.`.
 Cada push a la rama principal redespliega.
+
+**El JavaScript va con `no-cache`, y no es un descuido.** Sin build step las
+URLs no llevan hash, asi que `/3d/three-d-stage.js` es siempre la misma
+direccion. Con `max-age=3600` — que es lo que habia — uno arregla un error,
+despliega, y el navegador de quien ya habia entrado sigue usando el archivo
+roto durante una hora sin llegar a preguntar: recargar no cambia nada y el
+arreglo parece no haber salido. `no-cache` no quiere decir "no guardes", quiere
+decir "revalida antes de usar": el archivo sigue en disco y la consulta se
+responde con un 304 de unos pocos bytes. Los modelos son otra cosa — pesan un
+mega, cambian solo cuando se reexportan, y conservan su dia de cache por las
+reglas de abajo, que al ser mas especificas ganan sobre esta.
