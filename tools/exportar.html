@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exportar modelos AR — Mundo Shop</title>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.184.0/build/three.module.js",
+    "three/addons/exporters/GLTFExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js",
+    "three/addons/exporters/USDZExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/USDZExporter.js"
+  }
+}
+</script>
+<style>
+body { font:14px/1.6 'Helvetica Neue',Helvetica,Arial,sans-serif; background:#faf8f4; color:#22201d; max-width:760px; margin:0 auto; padding:32px 24px 60px; }
+h1 { font-size:20px; margin:0 0 6px; }
+p.lead { color:#6f6a62; margin:0 0 24px; }
+button { font:600 14px inherit; background:#2d5a27; color:#fff; border:none; border-radius:6px; padding:12px 20px; cursor:pointer; }
+button:hover { background:#1e4a1a; }
+button[disabled] { opacity:.5; cursor:default; }
+pre { background:#fff; border:1px solid #e3ded4; border-radius:8px; padding:14px 16px; margin-top:20px; white-space:pre-wrap; font:12px/1.7 ui-monospace,Menlo,Consolas,monospace; min-height:60px; }
+.ok { color:#2d7a27; } .err { color:#a3301e; }
+code { background:#efece5; padding:1px 5px; border-radius:3px; }
+</style>
+</head>
+<body>
+
+<h1>Exportar modelos para AR</h1>
+<p class="lead">
+  Genera el <code>.glb</code> (Android / Scene Viewer) y el <code>.usdz</code>
+  (iPhone / AR Quick Look) de cada color y los guarda en <code>3d/models/</code>
+  a traves del servidor de desarrollo. Los modelos salen con las puertas cerradas
+  y sin contenido interior: en AR se mira el mueble contra la pared, y la ropa
+  solo agrega peso al archivo.
+</p>
+
+<button id="run" type="button">Generar los 8 archivos</button>
+<pre id="log">Listo para generar.</pre>
+
+<script type="module">
+import * as THREE from 'three';
+import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
+import { USDZExporter } from 'three/addons/exporters/USDZExporter.js';
+import { construirRopero, COLORES } from '../3d/ropero-berlim.js';
+
+const logEl = document.getElementById('log');
+const btn = document.getElementById('run');
+let lineas = [];
+const log = (t, cls) => {
+  lineas.push(cls ? `<span class="${cls}">${t}</span>` : t);
+  logEl.innerHTML = lineas.join('\n');
+};
+
+async function guardar(nombre, datos) {
+  const r = await fetch('/__escribir?nombre=' + encodeURIComponent(nombre), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/octet-stream' },
+    body: datos
+  });
+  if (!r.ok) throw new Error(`${nombre}: HTTP ${r.status}`);
+  const j = await r.json();
+  return j.bytes;
+}
+
+const kb = (n) => (n / 1024).toFixed(0) + ' KB';
+
+btn.addEventListener('click', async () => {
+  btn.disabled = true;
+  lineas = [];
+  log('Generando…\n');
+
+  try {
+    for (const color of Object.keys(COLORES)) {
+      // Puertas cerradas y sin contenido: es lo que se quiere ver contra la pared.
+      const { grupo } = construirRopero(THREE, { color, contenido: false });
+
+      // Las mallas con array de materiales las descarta USDZExporter en
+      // silencio; avisamos fuerte si alguna se colo en el modelo.
+      let multi = 0;
+      grupo.traverse(o => { if (o.isMesh && Array.isArray(o.material)) multi++; });
+      if (multi) log(`  AVISO: ${multi} mallas con array de materiales — no van a salir en el USDZ`, 'err');
+
+      const glb = await new GLTFExporter().parseAsync(grupo, { binary: true });
+      const nGlb = await guardar(`ropero-berlim-${color}.glb`, glb);
+      log(`  ropero-berlim-${color}.glb   ${kb(nGlb)}`, 'ok');
+
+      // quickLookCompatible acomoda los materiales a lo que acepta AR Quick Look.
+      const usdz = await new USDZExporter().parseAsync(grupo, { quickLookCompatible: true });
+      const nUsdz = await guardar(`ropero-berlim-${color}.usdz`, usdz);
+      log(`  ropero-berlim-${color}.usdz  ${kb(nUsdz)}`, 'ok');
+    }
+    log('\nListo. Falta commitear 3d/models/ y pushear para que Vercel los sirva.', 'ok');
+  } catch (e) {
+    log('\nFALLO: ' + e.message, 'err');
+    console.error(e);
+  }
+  btn.disabled = false;
+});
+</script>
+</body>
+</html>

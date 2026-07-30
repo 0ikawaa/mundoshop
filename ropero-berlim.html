@@ -16,7 +16,10 @@
 }
 </script>
 <style>
-:root { --ink:#22201d; --muted:#6f6a62; --line:#e3ded4; --paper:#faf8f4; --accent:#2d5a27; }
+:root {
+  --ink:#22201d; --muted:#6f6a62; --line:#e3ded4; --paper:#faf8f4; --accent:#2d5a27;
+  --ar-icon:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M12 8.5 8 10.6v4.3l4 2.1 4-2.1v-4.3z"/></svg>');
+}
 * { box-sizing:border-box; margin:0; }
 html { scroll-behavior:smooth; }
 body { background:var(--paper); color:var(--ink); font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; }
@@ -96,6 +99,14 @@ three-d-stage { display:block; width:100%; height:420px; }
 .btn-buy:hover { background:#1e4a1a; }
 .btn-cart { background:#e8f0e7; color:var(--accent); }
 .btn-cart:hover { background:#d4e4d2; }
+/* Realidad aumentada */
+.ar-box { margin-top:10px; }
+.btn-ar { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; border:1px solid var(--accent); color:var(--accent); background:#fff; border-radius:6px; padding:13px; font-size:15px; font-weight:600; text-decoration:none; cursor:pointer; }
+.btn-ar:hover { background:#f2f7f1; }
+.btn-ar::before { content:""; width:17px; height:17px; flex:none; background:currentColor; -webkit-mask:var(--ar-icon) center/contain no-repeat; mask:var(--ar-icon) center/contain no-repeat; }
+.ar-nota { font-size:12px; color:var(--muted); margin-top:8px; line-height:1.5; }
+.ar-nota strong { color:var(--ink); }
+
 .perks { display:grid; gap:10px; border-top:1px solid var(--line); margin-top:18px; padding-top:16px; font-size:12px; color:var(--muted); line-height:1.5; }
 .perks strong { color:var(--ink); }
 
@@ -175,6 +186,11 @@ footer { max-width:1200px; margin:0 auto; padding:20px 24px 40px; font-size:11px
       <div class="cta-buttons">
         <button class="btn-buy">Comprar ahora</button>
         <button class="btn-cart">Agregar al carrito</button>
+      </div>
+
+      <div class="ar-box">
+        <div id="ar-slot"></div>
+        <p class="ar-nota" id="ar-nota"></p>
       </div>
 
       <div class="perks">
@@ -302,12 +318,39 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLb(); }
 <script src="./3d/three-d-stage.js"></script>
 <script type="module">
   import { initRoperoBerlim } from './3d/ropero-berlim.js';
+  import { montarAR } from './3d/ar.js';
 
   const stage = document.querySelector('three-d-stage');
   const btn = document.getElementById('toggle');
   const api = await initRoperoBerlim(stage, btn);
 
-  // Los circulos de color tambien cambian las hojas del modelo 3D.
+  // ——— Realidad aumentada: modelos pre-generados con tools/exportar.html
+  const MODELOS = {};
+  for (const c of ['negro', 'blanco', 'castano', 'beige']) {
+    MODELOS[c] = {
+      glb: `./3d/models/ropero-berlim-${c}.glb`,
+      usdz: `./3d/models/ropero-berlim-${c}.usdz`
+    };
+  }
+  const notaAR = document.getElementById('ar-nota');
+  const ar = montarAR({
+    contenedor: document.getElementById('ar-slot'),
+    modelo: MODELOS,
+    titulo: 'Ropero Placard Berlim 8 puertas',
+    clase: 'btn-ar',
+    alSinSoporte: () => {
+      notaAR.innerHTML = '<strong>Ver en tu ambiente:</strong> abri esta pagina ' +
+        'desde tu celular para apoyar el ropero en tu cuarto con la camara, ' +
+        'a tamano real.';
+    }
+  });
+  if (ar.plataforma) {
+    notaAR.textContent = ar.plataforma === 'ios'
+      ? 'Se abre la camara y podes apoyar el ropero en el piso, a tamano real.'
+      : 'Se abre la camara con Google Scene Viewer y podes apoyar el ropero en el piso, a tamano real.';
+  }
+
+  // Los circulos de color cambian las hojas del modelo 3D y el archivo de AR.
   const nameEl = document.getElementById('color-name');
   document.getElementById('color-dots').addEventListener('click', (e) => {
     const dot = e.target.closest('.color-dot');
@@ -316,6 +359,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLb(); }
     dot.classList.add('active');
     nameEl.textContent = dot.dataset.name;
     api.setColor(dot.dataset.color);
+    ar.setColor(dot.dataset.color);
   });
 
   // Encuadres predefinidos.
