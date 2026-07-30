@@ -5,7 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mundo Shop — Fichas de producto con visor 3D</title>
 <style>
-:root { --ink:#22201d; --muted:#6f6a62; --line:#e3ded4; --paper:#faf8f4; --accent:#2d5a27; }
+:root {
+  /* Paleta de marca del logo: azul #041e7d, amarillo #fae307, blanco.
+     El amarillo va siempre como fondo con azul encima — sobre blanco no tiene
+     contraste suficiente para texto. */
+  --ink:#1b1b22; --muted:#6b6b7a; --line:#e2e4ef; --paper:#f7f8fc;
+  --accent:#041e7d; --accent-osc:#03145e; --amarillo:#fae307;
+}
 * { box-sizing:border-box; margin:0; }
 body { background:var(--paper); color:var(--ink); font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; }
 .topbar { background:#fff; border-bottom:1px solid var(--line); padding:0 24px; }
@@ -15,14 +21,15 @@ body { background:var(--paper); color:var(--ink); font-family:'Helvetica Neue',H
 main { max-width:1100px; margin:0 auto; padding:36px 24px 60px; }
 h1 { font-size:22px; font-weight:600; }
 .lead { font-size:14px; color:var(--muted); margin:8px 0 28px; max-width:620px; line-height:1.6; }
-.cards { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:16px; }
+.cards { display:grid; grid-template-columns:repeat(auto-fill, minmax(min(260px, 100%), 1fr)); gap:16px; }
+.cards > * { min-width:0; }
 .card { display:block; text-decoration:none; color:inherit; background:#fff; border:1px solid var(--line); border-radius:10px; overflow:hidden; transition:box-shadow .2s, transform .2s; }
 .card:hover { box-shadow:0 6px 20px rgba(0,0,0,.08); transform:translateY(-2px); }
 .card img { width:100%; aspect-ratio:4/3; object-fit:contain; background:#fff; }
 .card .body { padding:12px 14px 16px; border-top:1px solid var(--line); }
 .card h2 { font-size:14px; font-weight:600; line-height:1.35; margin-bottom:6px; }
 .card .price { font-size:20px; font-weight:300; }
-.tag { display:inline-block; background:var(--accent); color:#fff; font-size:10px; font-weight:700; letter-spacing:.08em; padding:3px 7px; border-radius:4px; margin-bottom:8px; }
+.tag { display:inline-block; background:var(--amarillo); color:var(--accent); font-size:10px; font-weight:800; letter-spacing:.08em; padding:3px 7px; border-radius:4px; margin-bottom:8px; }
 footer { max-width:1100px; margin:0 auto; padding:20px 24px 40px; font-size:11px; color:var(--muted); border-top:1px solid var(--line); }
 </style>
 </head>

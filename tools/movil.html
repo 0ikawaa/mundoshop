@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Chequeo movil — Mundo Shop</title>
+<style>
+body { font:13px/1.6 'Helvetica Neue',Helvetica,Arial,sans-serif; background:#f4f2ee; margin:0; padding:20px; display:flex; gap:20px; align-items:flex-start; }
+iframe { border:1px solid #ccc; background:#fff; }
+#panel { flex:1; }
+pre { background:#fff; border:1px solid #ddd; padding:12px; white-space:pre-wrap; font:12px/1.6 ui-monospace,Consolas,monospace; }
+label { display:block; margin-bottom:8px; }
+input { width:80px; }
+</style>
+</head>
+<body>
+<div>
+  <label>ancho <input id="w" type="number" value="390"> px</label>
+  <iframe id="f" src="/ropero-berlim.html" width="390" height="760"></iframe>
+</div>
+<div id="panel">
+  <p><button id="run" type="button">Buscar desbordes</button></p>
+  <pre id="out">—</pre>
+</div>
+
+<script>
+const f = document.getElementById('f');
+document.getElementById('w').addEventListener('change', e => { f.width = e.target.value; f.src = f.src; });
+
+document.getElementById('run').addEventListener('click', () => {
+  const d = f.contentDocument, w = f.contentWindow;
+  const limite = d.documentElement.clientWidth;
+  const lineas = [];
+  lineas.push(`viewport interno : ${limite}px`);
+  lineas.push(`documentElement  : scrollWidth ${d.documentElement.scrollWidth}`);
+  lineas.push(`body             : scrollWidth ${d.body.scrollWidth}`);
+  lineas.push('');
+
+  // Cualquier elemento cuyo borde derecho pase el viewport, o que sea mas ancho
+  // que el, ignorando los que scrollean internamente a proposito.
+  const culpables = [];
+  d.querySelectorAll('*').forEach(el => {
+    const r = el.getBoundingClientRect();
+    if (r.width === 0 && r.height === 0) return;
+    const est = w.getComputedStyle(el);
+    if (est.position === 'fixed' && est.display === 'none') return;
+    const desborde = Math.round(Math.max(r.right - limite, 0));
+    const ancho = Math.round(r.width);
+    if (desborde > 1 || ancho > limite + 1) {
+      const scrollPropio = /auto|scroll|hidden|clip/.test(est.overflowX);
+      culpables.push({ el, desborde, ancho, scrollPropio, est });
+    }
+  });
+
+  if (!culpables.length) lineas.push('Sin desbordes.');
+  culpables.sort((a, b) => (b.desborde + b.ancho) - (a.desborde + a.ancho));
+  culpables.slice(0, 25).forEach(c => {
+    const el = c.el;
+    const id = el.tagName.toLowerCase() +
+      (el.id ? '#' + el.id : '') +
+      (el.className && typeof el.className === 'string' ? '.' + el.className.trim().split(/\s+/).join('.') : '');
+    lineas.push(`${id}\n    ancho ${c.ancho}  pasa ${c.desborde}px  overflow-x:${c.est.overflowX}` +
+      (c.scrollPropio ? '  (scrollea solo, ok)' : '  <-- DESBORDA'));
+  });
+  document.getElementById('out').textContent = lineas.join('\n');
+});
+</script>
+</body>
+</html>
