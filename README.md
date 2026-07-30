@@ -7,18 +7,57 @@ sin build ni dependencias de servidor.
 ## Estructura
 
 ```
-index.html               hub con las fichas publicadas
+index.html               portada con hero y catalogo
 ropero-berlim.html       ficha: Ropero Placard Berlim 8 puertas (MLU53664117)
+
+assets/estilos.css       sistema de diseno: tokens, cabecera, ficha, pie
+assets/tienda.js         galeria, lightbox, reveal, barra fija, carrito
+assets/fuentes/          Inter variable, servida desde el propio dominio
+
 3d/three-d-stage.js      web component <three-d-stage>: escena, luces, orbit,
                          sombra de piso y exportacion OBJ+MTL / GLB
 3d/ropero-berlim.js      modelo del Berlim en medidas reales (206 x 38,5 x 199 cm)
 3d/ar.js                 lanzador de AR nativo (Quick Look / Scene Viewer)
 3d/models/               GLB y USDZ pre-generados, uno por color
+
+favicon.svg .ico         generados por tools/iconos.js
+apple-touch-icon.png
+site.webmanifest
+
 tools/servidor.js        servidor de desarrollo (no se publica)
 tools/exportar.html      genera los GLB/USDZ (no se publica)
+tools/iconos.js          genera favicon, apple-touch-icon y manifest
+tools/movil.html         monta una ficha en un iframe angosto y lista que
+                         elementos desbordan (no se publica)
 vercel.json              cache y content-type de los modelos
 .vercelignore            deja tools/ fuera del deploy
 ```
+
+## Diseno
+
+Sin framework y sin build a proposito: son fichas estaticas con un visor 3D en
+vanilla, y meter React o Next agregaria dependencias y riesgo sobre el pipeline
+de AR sin mejorar como se ve. Lo que hace el trabajo es `assets/estilos.css`,
+que define los tokens (color, tipografia fluida, radios, sombras, curvas de
+animacion) y todos los componentes compartidos. Una ficha nueva solo trae su
+contenido.
+
+Dos reglas del archivo que parecen menores y no lo son:
+
+- `.grid > * { min-width:0 }` — los items de grid arrancan en `min-width:auto` y
+  crecen hasta el ancho intrinseco de su contenido. Sin esto, una foto grande o
+  un canvas hacen que la pagina scrollee de costado en el celular.
+- `[hidden] { display:none !important }` — cualquier `display` propio le gana al
+  `[hidden]` del navegador, asi que un elemento con `.clase{display:flex}` se
+  sigue viendo aunque tenga el atributo.
+
+El bloque `.revelar` (aparicion al scrollear) solo se esconde si el `<html>`
+tiene la clase `js`, que agrega un script en el `<head>`. Si el modulo falla,
+la pagina se ve entera igual en vez de quedar en blanco bajo el pliegue.
+
+three.js se importa recien cuando el visitante abre la pestana "Vista 3D".
+Son unos 600 KB: cargarlo de entrada retrasaria la ficha para todo el mundo,
+incluida la gente que nunca la abre.
 
 ## Como funciona el visor
 

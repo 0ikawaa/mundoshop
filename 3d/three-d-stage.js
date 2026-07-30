@@ -160,6 +160,12 @@
       note.className = 'note';
       note.textContent = 'Arrastra para girar · scroll para acercar · boton derecho para desplazar';
       root.appendChild(note);
+      // `limpio` deja solo la escena: sin la ayuda superpuesta y sin los botones
+      // de descarga. Es lo que va en la tienda — al comprador no le sirve
+      // bajarse el OBJ, y no hace falta regalar el modelo. Sacando el atributo
+      // vuelven a aparecer, que es como se usa el visor puertas adentro.
+      this._limpio = this.hasAttribute('limpio');
+      if (this._limpio) note.style.display = 'none';
       this._toolbar = document.createElement('div');
       this._toolbar.className = 'toolbar';
       this._objBtn = document.createElement('button');
@@ -172,6 +178,7 @@
       this._glbBtn.addEventListener('click', () => this._runExport('glb'));
       this._toolbar.appendChild(this._objBtn);
       this._toolbar.appendChild(this._glbBtn);
+      if (this._limpio) this._toolbar.style.display = 'none';
       root.appendChild(this._toolbar);
       this._setButtonsEnabled(false);
       /** Resolves with { THREE } once the scene is live — build the model

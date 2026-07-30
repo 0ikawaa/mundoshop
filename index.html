@@ -3,58 +3,307 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mundo Shop — Fichas de producto con visor 3D</title>
+<title>Mundo Shop — Muebles con vista 3D y prueba en tu ambiente</title>
+<meta name="description" content="Muebles para toda la casa con envio a todo Uruguay. Cada producto con modelo 3D de medidas reales y prueba en realidad aumentada desde el celular.">
+<meta name="theme-color" content="#041e7d">
+
+<script>document.documentElement.classList.add('js')</script>
+
+<link rel="icon" href="./favicon.svg" type="image/svg+xml">
+<link rel="icon" href="./favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="manifest" href="./site.webmanifest">
+
+<link rel="preload" href="./assets/fuentes/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="./assets/estilos.css">
+
 <style>
-:root {
-  /* Paleta de marca del logo: azul #041e7d, amarillo #fae307, blanco.
-     El amarillo va siempre como fondo con azul encima — sobre blanco no tiene
-     contraste suficiente para texto. */
-  --ink:#1b1b22; --muted:#6b6b7a; --line:#e2e4ef; --paper:#f7f8fc;
-  --accent:#041e7d; --accent-osc:#03145e; --amarillo:#fae307;
+/* --- Solo de la portada --- */
+.hero {
+  position:relative; overflow:hidden;
+  background:linear-gradient(135deg, var(--azul-900) 0%, var(--azul) 55%, var(--azul-600) 100%);
+  color:#fff;
 }
-* { box-sizing:border-box; margin:0; }
-body { background:var(--paper); color:var(--ink); font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; }
-.topbar { background:#fff; border-bottom:1px solid var(--line); padding:0 24px; }
-.topbar-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; height:56px; }
-.brand { font-weight:800; font-size:14px; letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); }
-.brand-sub { font-size:11px; color:var(--muted); }
-main { max-width:1100px; margin:0 auto; padding:36px 24px 60px; }
-h1 { font-size:22px; font-weight:600; }
-.lead { font-size:14px; color:var(--muted); margin:8px 0 28px; max-width:620px; line-height:1.6; }
-.cards { display:grid; grid-template-columns:repeat(auto-fill, minmax(min(260px, 100%), 1fr)); gap:16px; }
-.cards > * { min-width:0; }
-.card { display:block; text-decoration:none; color:inherit; background:#fff; border:1px solid var(--line); border-radius:10px; overflow:hidden; transition:box-shadow .2s, transform .2s; }
-.card:hover { box-shadow:0 6px 20px rgba(0,0,0,.08); transform:translateY(-2px); }
-.card img { width:100%; aspect-ratio:4/3; object-fit:contain; background:#fff; }
-.card .body { padding:12px 14px 16px; border-top:1px solid var(--line); }
-.card h2 { font-size:14px; font-weight:600; line-height:1.35; margin-bottom:6px; }
-.card .price { font-size:20px; font-weight:300; }
-.tag { display:inline-block; background:var(--amarillo); color:var(--accent); font-size:10px; font-weight:800; letter-spacing:.08em; padding:3px 7px; border-radius:4px; margin-bottom:8px; }
-footer { max-width:1100px; margin:0 auto; padding:20px 24px 40px; font-size:11px; color:var(--muted); border-top:1px solid var(--line); }
+.hero::after {
+  content:""; position:absolute; inset:auto -10% -60% 40%;
+  height:420px; border-radius:50%;
+  background:radial-gradient(circle, rgba(250,227,7,.16), transparent 65%);
+  pointer-events:none;
+}
+.hero__grid {
+  position:relative; z-index:1;
+  display:grid; grid-template-columns:1.05fr .95fr; gap:clamp(2rem,5vw,4rem);
+  align-items:center;
+  padding-block:clamp(3rem, 7vw, 5.5rem);
+}
+.hero__grid > * { min-width:0; }
+@media (max-width:920px) { .hero__grid { grid-template-columns:1fr; } }
+
+.hero__sello {
+  display:inline-flex; align-items:center; gap:.5rem;
+  background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2);
+  padding:.35rem .75rem; border-radius:999px;
+  font-size:var(--t-xs); font-weight:600;
+}
+.hero__sello .punto { width:6px; height:6px; border-radius:50%; background:var(--amarillo); }
+.hero h1 { font-size:var(--t-2xl); margin:1.1rem 0 0; letter-spacing:-.035em; }
+.hero h1 em { font-style:normal; color:var(--amarillo); }
+.hero p.bajada { font-size:var(--t-md); color:rgba(255,255,255,.82); max-width:46ch; margin-top:1rem; line-height:1.65; }
+.hero__botones { display:flex; flex-wrap:wrap; gap:.75rem; margin-top:1.9rem; }
+.hero__botones .btn { width:auto; }
+.btn--amarillo { background:var(--amarillo); color:var(--azul); }
+.btn--amarillo:hover { background:var(--amarillo-600); }
+.btn--fantasma { background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.28); color:#fff; }
+.btn--fantasma:hover { background:rgba(255,255,255,.16); }
+
+.hero__datos { display:flex; gap:clamp(1.25rem,3vw,2.5rem); margin-top:2.4rem; flex-wrap:wrap; }
+.hero__dato b { display:block; font-size:1.5rem; font-weight:800; letter-spacing:-.03em; }
+.hero__dato span { font-size:var(--t-xs); color:rgba(255,255,255,.65); }
+
+.hero__foto {
+  border-radius:var(--radio-xl); overflow:hidden;
+  box-shadow:0 30px 70px rgba(2,8,40,.45);
+  rotate:-1.2deg;
+}
+.hero__foto img { width:100%; aspect-ratio:4/3; object-fit:cover; }
+@media (max-width:920px) { .hero__foto { rotate:0deg; } }
+
+/* Tarjetas de producto */
+.productos { display:grid; grid-template-columns:repeat(auto-fill, minmax(min(280px,100%),1fr)); gap:1.5rem; }
+.productos > * { min-width:0; }
+.producto-card {
+  display:flex; flex-direction:column;
+  background:var(--papel); border:1px solid var(--linea);
+  border-radius:var(--radio-lg); overflow:hidden;
+  transition:box-shadow var(--medio), transform var(--medio), border-color var(--medio);
+}
+.producto-card:hover { transform:translateY(-4px); box-shadow:var(--sombra-lg); border-color:var(--azul-300); }
+.producto-card__foto { position:relative; background:#fff; }
+.producto-card__foto img { width:100%; aspect-ratio:4/3; object-fit:contain; padding:1rem; }
+.producto-card__sellos { position:absolute; top:.75rem; left:.75rem; display:flex; gap:.35rem; flex-wrap:wrap; }
+.sello {
+  font-size:10px; font-weight:800; letter-spacing:.07em;
+  padding:.25rem .45rem; border-radius:4px;
+}
+.sello--3d { background:var(--amarillo); color:var(--azul); }
+.sello--off { background:var(--azul); color:#fff; }
+.producto-card__cuerpo { padding:1rem 1.15rem 1.25rem; border-top:1px solid var(--linea-2); display:flex; flex-direction:column; gap:.35rem; flex:1; }
+.producto-card__cat { font-size:var(--t-xs); color:var(--gris-2); font-weight:600; letter-spacing:.06em; text-transform:uppercase; }
+.producto-card h3 { font-size:var(--t-base); font-weight:600; line-height:1.4; letter-spacing:-.01em; }
+.producto-card__precio { margin-top:auto; padding-top:.6rem; }
+.producto-card__precio b { font-size:1.375rem; font-weight:800; letter-spacing:-.03em; }
+.producto-card__precio s { font-size:var(--t-xs); color:var(--gris-2); margin-left:.4rem; }
+.producto-card__cuotas { font-size:var(--t-xs); color:var(--azul); font-weight:600; }
+
+.proximo {
+  display:grid; place-content:center; gap:.5rem; text-align:center;
+  min-height:220px; padding:2rem;
+  border:1.5px dashed var(--linea); border-radius:var(--radio-lg);
+  color:var(--gris-2); background:transparent;
+}
+.proximo b { color:var(--gris); font-weight:600; }
+.proximo span { font-size:var(--t-xs); }
 </style>
 </head>
 <body>
-<div class="topbar"><div class="topbar-inner">
-  <span class="brand">MUNDO SHOP</span>
-  <span class="brand-sub">Envios a todo el pais</span>
-</div></div>
+
+<div class="anuncio">
+  <div class="contenedor anuncio__inner">
+    <span><b>Envio gratis</b> en compras superiores a $ 10.000</span>
+    <span class="sep opt">&bull;</span>
+    <span class="opt">Hasta 10 cuotas sin interes</span>
+    <span class="sep opt">&bull;</span>
+    <span class="opt">Deposito propio en Uruguay</span>
+  </div>
+</div>
+
+<header class="cabecera">
+  <div class="contenedor cabecera__inner">
+    <a class="logo" href="./index.html" aria-label="Mundo Shop, inicio">
+      <svg viewBox="0 0 42 32" aria-hidden="true">
+        <path d="M2 7a5 5 0 0 1 5-5h19.6a4 4 0 0 1 2.9 1.2l10 10.4a2 2 0 0 1 0 2.8l-10 10.4a4 4 0 0 1-2.9 1.2H7a5 5 0 0 1-5-5z" fill="#041e7d"/>
+        <circle cx="31.5" cy="16" r="3.1" fill="#fff"/>
+        <rect x="7.5" y="12.6" width="14" height="2.6" rx="1.3" fill="#fff"/>
+        <rect x="7.5" y="17.6" width="9" height="2.6" rx="1.3" fill="#fae307"/>
+      </svg>
+      <span class="logo__texto">
+        <span class="logo__1">Mundo</span>
+        <span class="logo__2">Shop</span>
+      </span>
+    </a>
+
+    <nav class="nav" aria-label="Categorias">
+      <a href="#catalogo">Dormitorio</a>
+      <a href="#">Living</a>
+      <a href="#">Comedor</a>
+      <a href="#">Oficina</a>
+      <a href="#">Ofertas</a>
+    </nav>
+
+    <div class="buscador">
+      <svg class="lupa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" placeholder="Buscar muebles, roperos, escritorios&hellip;" aria-label="Buscar productos">
+    </div>
+
+    <div class="acciones">
+      <button class="icono-btn" type="button" aria-label="Favoritos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+      </button>
+      <button class="icono-btn" type="button" aria-label="Mi cuenta">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+      <button class="icono-btn" type="button" aria-label="Carrito">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
 
 <main>
-  <h1>Fichas de producto con visor 3D</h1>
-  <p class="lead">Cada ficha incluye un modelo tridimensional del mueble construido con medidas reales: se puede girar, acercar, abrir y descargar en OBJ o GLB.</p>
 
-  <div class="cards">
-    <a class="card" href="./ropero-berlim.html">
-      <img src="https://http2.mlstatic.com/D_890239-MLA112939004923_062026-F.jpg" alt="Ropero Placard Berlim 8 puertas">
-      <div class="body">
-        <span class="tag">3D</span>
-        <h2>Ropero Placard Berlim 8 Puertas 10 Divisiones — MDF Negro</h2>
-        <div class="price">$ 8.290</div>
+<section class="hero">
+  <div class="contenedor hero__grid">
+    <div>
+      <span class="hero__sello"><span class="punto"></span> Vista 3D y realidad aumentada</span>
+      <h1>Mira el mueble en tu casa <em>antes</em> de comprarlo</h1>
+      <p class="bajada">Cada ficha trae un modelo tridimensional construido con las medidas reales del producto. Girialo, abri las puertas y apoyalo en tu propio cuarto con la camara del celular.</p>
+      <div class="hero__botones">
+        <a class="btn btn--amarillo" href="#catalogo">Ver el catalogo</a>
+        <a class="btn btn--fantasma" href="./ropero-berlim.html">Probar la vista 3D</a>
       </div>
-    </a>
+      <div class="hero__datos">
+        <div class="hero__dato"><b class="tabular">24 h</b><span>Despacho desde deposito propio</span></div>
+        <div class="hero__dato"><b class="tabular">10</b><span>Cuotas sin interes</span></div>
+        <div class="hero__dato"><b class="tabular">30</b><span>Dias para devolver gratis</span></div>
+      </div>
+    </div>
+    <div class="hero__foto">
+      <img src="https://http2.mlstatic.com/D_805659-MLA112938739059_062026-F.jpg" alt="Dormitorio con el ropero Berlim de 8 puertas en negro" width="1200" height="900" fetchpriority="high">
+    </div>
   </div>
+</section>
+
+<div class="contenedor">
+  <section class="seccion revelar" id="catalogo">
+    <div class="seccion__cabeza">
+      <span class="seccion__kicker">Catalogo</span>
+      <h2>Dormitorio</h2>
+      <p class="seccion__sub">Vamos sumando productos. Los que tienen la chapita 3D ya se pueden mirar en tres dimensiones y probar en tu ambiente.</p>
+    </div>
+
+    <div class="productos">
+      <a class="producto-card" href="./ropero-berlim.html">
+        <div class="producto-card__foto">
+          <div class="producto-card__sellos">
+            <span class="sello sello--3d">3D + AR</span>
+            <span class="sello sello--off">18% OFF</span>
+          </div>
+          <img src="https://http2.mlstatic.com/D_890239-MLA112939004923_062026-F.jpg" alt="Ropero Placard Berlim de 8 puertas en negro" loading="lazy" decoding="async">
+        </div>
+        <div class="producto-card__cuerpo">
+          <span class="producto-card__cat">Placares y roperos</span>
+          <h3>Ropero Placard Berlim 8 Puertas 10 Divisiones &mdash; MDF Negro</h3>
+          <div class="producto-card__precio">
+            <b class="tabular">$ 8.290</b><s class="tabular">$ 10.188</s>
+            <p class="producto-card__cuotas tabular">10 cuotas sin interes de $ 829</p>
+          </div>
+        </div>
+      </a>
+
+      <div class="proximo">
+        <b>Proximamente</b>
+        <span>Estamos modelando el resto del catalogo</span>
+      </div>
+      <div class="proximo">
+        <b>Proximamente</b>
+        <span>Estamos modelando el resto del catalogo</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="seccion revelar">
+    <div class="seccion__cabeza">
+      <span class="seccion__kicker">Como funciona</span>
+      <h2>Tres pasos, sin instalar nada</h2>
+    </div>
+    <div class="confianza__grid" style="padding-block:0">
+      <div class="confianza__item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 7v10l9 5 9-5V7z"/><path d="m3 7 9 5 9-5M12 12v10"/></svg>
+        <div><b>1. Miralo en 3D</b><span>Girialo, acercate y abri las puertas para ver como esta dividido por dentro.</span></div>
+      </div>
+      <div class="confianza__item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M12 8.5 8 10.6v4.3l4 2.1 4-2.1v-4.3z"/></svg>
+        <div><b>2. Probalo en tu cuarto</b><span>Desde el celular, la camara apoya el mueble en tu piso a tamano real.</span></div>
+      </div>
+      <div class="confianza__item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 17V5a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h1"/><path d="M14 8h4l3 3v6h-2"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+        <div><b>3. Te llega en 24 h</b><span>Sale de nuestro deposito, con envio gratis a partir de $ 10.000.</span></div>
+      </div>
+      <div class="confianza__item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+        <div><b>Y si no te gusta</b><span>Tenes 30 dias para devolverlo sin costo, sin explicaciones.</span></div>
+      </div>
+    </div>
+  </section>
+</div>
 </main>
 
-<footer>Mundo Shop — visores 3D en three.js. Las imagenes y los modelos son ilustrativos.</footer>
+<footer class="pie">
+  <div class="contenedor pie__grid">
+    <div>
+      <span class="logo">
+        <svg viewBox="0 0 42 32" aria-hidden="true" style="height:28px">
+          <path d="M2 7a5 5 0 0 1 5-5h19.6a4 4 0 0 1 2.9 1.2l10 10.4a2 2 0 0 1 0 2.8l-10 10.4a4 4 0 0 1-2.9 1.2H7a5 5 0 0 1-5-5z" fill="#fff"/>
+          <circle cx="31.5" cy="16" r="3.1" fill="#041e7d"/>
+          <rect x="7.5" y="12.6" width="14" height="2.6" rx="1.3" fill="#041e7d"/>
+          <rect x="7.5" y="17.6" width="9" height="2.6" rx="1.3" fill="#fae307"/>
+        </svg>
+        <span class="logo__texto">
+          <span class="logo__1">Mundo</span>
+          <span class="logo__2">Shop</span>
+        </span>
+      </span>
+      <p class="pie__sobre">Muebles para toda la casa, con deposito propio en Uruguay y envio a todo el pais. Cada ficha con modelo 3D y prueba en realidad aumentada.</p>
+    </div>
+    <div>
+      <h3>Comprar</h3>
+      <ul>
+        <li><a href="#catalogo">Dormitorio</a></li>
+        <li><a href="#">Living</a></li>
+        <li><a href="#">Comedor</a></li>
+        <li><a href="#">Oficina</a></li>
+        <li><a href="#">Ofertas</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Ayuda</h3>
+      <ul>
+        <li><a href="#">Envios y entregas</a></li>
+        <li><a href="#">Cambios y devoluciones</a></li>
+        <li><a href="#">Garantia</a></li>
+        <li><a href="#">Formas de pago</a></li>
+        <li><a href="#">Contacto</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Mundo Shop</h3>
+      <ul>
+        <li><a href="#">Sobre nosotros</a></li>
+        <li><a href="#">Nuestro deposito</a></li>
+        <li><a href="#">Terminos y condiciones</a></li>
+        <li><a href="#">Privacidad</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="contenedor pie__legal">
+    <span>&copy; 2026 Mundo Shop. Todos los derechos reservados.</span>
+    <span>Las imagenes y los modelos 3D son ilustrativos.</span>
+  </div>
+</footer>
+
+<script type="module">
+  import { montarRevelar } from './assets/tienda.js';
+  montarRevelar();
+</script>
 </body>
 </html>
