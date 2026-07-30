@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ropero Placard Berlim 8 Puertas 10 Divisiones — MDF Negro | Mundo Shop</title>
+<meta name="description" content="Ropero placard Berlim de 8 puertas batientes, 10 estantes y 2 barrales. MDF, 206 x 38,5 x 199 cm. Visor 3D interactivo: gira el mueble y abri las puertas.">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.184.0/build/three.module.js",
+    "three/addons/controls/OrbitControls.js": "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js",
+    "three/addons/exporters/OBJExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js",
+    "three/addons/exporters/GLTFExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js"
+  }
+}
+</script>
+<style>
+:root { --ink:#22201d; --muted:#6f6a62; --line:#e3ded4; --paper:#faf8f4; --accent:#2d5a27; }
+* { box-sizing:border-box; margin:0; }
+html { scroll-behavior:smooth; }
+body { background:var(--paper); color:var(--ink); font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; }
+
+/* Header */
+.topbar { background:#fff; border-bottom:1px solid var(--line); padding:0 24px; }
+.topbar-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; height:56px; }
+.brand { font-weight:800; font-size:14px; letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); text-decoration:none; }
+.brand-sub { font-size:11px; color:var(--muted); }
+
+/* Hero */
+.hero { max-width:1200px; margin:0 auto; padding:24px 24px 0; }
+.crumbs { font-size:12px; color:var(--muted); margin-bottom:12px; }
+.hero-grid { display:grid; grid-template-columns:1.4fr 0.6fr; gap:28px; }
+@media(max-width:900px) {
+  .hero-grid { grid-template-columns:1fr; }
+  .gallery-main { max-height:360px; }
+  three-d-stage { height:300px; }
+  .info h1 { font-size:18px; }
+  .price-now { font-size:28px; }
+  .photo-grid { grid-template-columns:repeat(3, 1fr); gap:6px; }
+}
+@media(max-width:480px) {
+  .hero { padding:12px 12px 0; }
+  .section { padding:20px 12px; }
+  .gallery-main { max-height:300px; }
+  .gallery-thumbs img { width:48px; height:48px; }
+  three-d-stage { height:250px; }
+  .info h1 { font-size:16px; }
+  .price-now { font-size:24px; }
+  .specs-grid { grid-template-columns:1fr; }
+  .specs-grid dl { font-size:12px; }
+  .photo-grid { grid-template-columns:repeat(2, 1fr); }
+  .cta-buttons button { padding:12px; font-size:14px; }
+  .topbar-inner { height:46px; }
+  .brand { font-size:12px; }
+  .viewer-bar { flex-wrap:wrap; }
+  .hint3d { margin-left:0; width:100%; }
+}
+
+/* Gallery */
+.gallery { position:relative; }
+.gallery-main { width:100%; max-height:480px; object-fit:contain; border-radius:8px; background:#fff; cursor:zoom-in; }
+.gallery-thumbs { display:flex; gap:6px; margin-top:8px; overflow-x:auto; padding-bottom:4px; }
+.gallery-thumbs img { width:60px; height:60px; object-fit:cover; border-radius:6px; border:2px solid transparent; cursor:pointer; opacity:0.7; transition:all 0.2s; }
+.gallery-thumbs img:hover, .gallery-thumbs img.active { border-color:var(--accent); opacity:1; }
+
+/* 3D viewer */
+.viewer-wrap { margin-top:12px; background:#fff; border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+.viewer-head { display:flex; align-items:center; gap:8px; padding:10px 14px; border-bottom:1px solid var(--line); font-size:12px; color:var(--muted); }
+.viewer-head strong { color:var(--ink); font-size:13px; }
+.badge3d { background:var(--accent); color:#fff; font-size:10px; font-weight:700; letter-spacing:0.08em; padding:3px 7px; border-radius:4px; }
+three-d-stage:not(:defined) { visibility:hidden; }
+three-d-stage { display:block; width:100%; height:420px; }
+.viewer-bar { display:flex; gap:8px; align-items:center; padding:10px 14px; border-top:1px solid var(--line); }
+.btn3d { font:500 12px/1 inherit; color:var(--ink); background:#fff; border:1px solid #cfc9bd; border-radius:999px; padding:8px 14px; cursor:pointer; }
+.btn3d:hover { background:#f4f1eb; }
+.hint3d { font-size:11px; color:var(--muted); margin-left:auto; }
+
+/* Product info */
+.info { padding-top:4px; }
+.info .condition { font-size:12px; color:var(--muted); }
+.info h1 { font-size:22px; line-height:1.3; margin:6px 0 14px; font-weight:600; }
+.price-old { font-size:14px; color:var(--muted); text-decoration:line-through; }
+.price-now { font-size:34px; font-weight:300; letter-spacing:-0.01em; }
+.price-now .off { font-size:15px; color:#2d7a27; font-weight:600; margin-left:8px; letter-spacing:0; }
+.price-cuotas { font-size:13px; color:#2d7a27; margin-top:4px; font-weight:500; }
+.color-label { font-size:13px; margin-top:18px; color:var(--muted); }
+.color-dots { display:flex; gap:8px; margin-top:6px; }
+.color-dot { width:32px; height:32px; border-radius:50%; border:2px solid var(--line); cursor:pointer; padding:0; }
+.color-dot.active { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent); }
+.stock-line { font-size:13px; font-weight:600; color:var(--accent); margin-top:16px; }
+.stock-line small { display:block; font-weight:400; color:var(--muted); margin-top:3px; font-size:12px; }
+.cta-buttons { display:grid; gap:10px; margin-top:18px; }
+.cta-buttons button { border-radius:6px; padding:14px; font-size:15px; font-weight:600; cursor:pointer; border:none; }
+.btn-buy { background:var(--accent); color:#fff; }
+.btn-buy:hover { background:#1e4a1a; }
+.btn-cart { background:#e8f0e7; color:var(--accent); }
+.btn-cart:hover { background:#d4e4d2; }
+.perks { display:grid; gap:10px; border-top:1px solid var(--line); margin-top:18px; padding-top:16px; font-size:12px; color:var(--muted); line-height:1.5; }
+.perks strong { color:var(--ink); }
+
+/* Sections */
+.section { max-width:1200px; margin:0 auto; padding:32px 24px; border-top:1px solid var(--line); }
+.section h2 { font-size:18px; font-weight:600; margin-bottom:16px; }
+.specs-grid { display:grid; grid-template-columns:1fr 1fr; gap:0 40px; }
+@media(max-width:600px) { .specs-grid { grid-template-columns:1fr; } }
+.specs-grid dl { display:grid; grid-template-columns:45% 55%; margin:0; font-size:13px; }
+.specs-grid dt, .specs-grid dd { padding:9px 0; border-bottom:1px solid var(--line); margin:0; }
+.specs-grid dt { color:var(--muted); }
+.desc { max-width:760px; font-size:14px; line-height:1.7; color:#34312c; }
+.desc p { margin:0 0 12px; }
+.desc ul { margin:0 0 12px; padding-left:18px; display:grid; gap:5px; }
+
+/* Photo grid */
+.photo-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:10px; }
+.photo-grid img { width:100%; aspect-ratio:1; object-fit:cover; border-radius:8px; cursor:zoom-in; }
+
+/* Lightbox */
+.lb { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.92); z-index:999; align-items:center; justify-content:center; cursor:zoom-out; }
+.lb.show { display:flex; }
+.lb img { max-width:92vw; max-height:90vh; object-fit:contain; border-radius:6px; }
+.lb-close { position:fixed; top:16px; right:20px; color:#fff; font-size:28px; cursor:pointer; z-index:1000; }
+
+footer { max-width:1200px; margin:0 auto; padding:20px 24px 40px; font-size:11px; color:var(--muted); border-top:1px solid var(--line); }
+</style>
+</head>
+<body>
+
+<div class="topbar"><div class="topbar-inner">
+  <a class="brand" href="./index.html">MUNDO SHOP</a>
+  <span class="brand-sub">Envios a todo el pais</span>
+</div></div>
+
+<div class="hero">
+  <p class="crumbs">Hogar y Muebles &rsaquo; Dormitorio &rsaquo; Placares y Roperos</p>
+  <div class="hero-grid">
+    <div>
+      <div class="gallery">
+        <img class="gallery-main" id="main-img" src="https://http2.mlstatic.com/D_890239-MLA112939004923_062026-F.jpg" alt="Ropero Placard Berlim 8 puertas negro">
+        <div class="gallery-thumbs" id="thumbs"></div>
+      </div>
+      <div class="viewer-wrap">
+        <div class="viewer-head">
+          <span class="badge3d">3D</span>
+          <strong>Vista 3D del producto</strong>
+          <span>medidas reales &middot; interior completo</span>
+        </div>
+        <three-d-stage name="ropero-berlim-8-puertas" background="#f7f5f1"></three-d-stage>
+        <div class="viewer-bar">
+          <button class="btn3d" id="toggle" type="button">Abrir puertas</button>
+          <button class="btn3d" id="frontal" type="button">Vista frontal</button>
+          <button class="btn3d" id="reset" type="button">Vista 3/4</button>
+          <span class="hint3d">Arrastra para girar &middot; scroll para acercar &middot; boton derecho para desplazar</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="info">
+      <p class="condition">Nuevo &middot; +100 vendidos</p>
+      <h1>Ropero Placard Berlim 8 Puertas 10 Divisiones Dormitorio MDF — Negro</h1>
+      <p class="price-old">$ 10.188</p>
+      <div class="price-now">$ 8.290<span class="off">18% OFF</span></div>
+      <p class="price-cuotas">10 cuotas sin interes de $ 829</p>
+
+      <p class="color-label">Color: <strong id="color-name">Negro</strong></p>
+      <div class="color-dots" id="color-dots">
+        <button class="color-dot active" data-color="negro"   data-name="Negro"   style="background:#1d1d1f;" title="Negro" aria-label="Negro"></button>
+        <button class="color-dot"        data-color="blanco"  data-name="Blanco"  style="background:#f2efe9;" title="Blanco" aria-label="Blanco"></button>
+        <button class="color-dot"        data-color="castano" data-name="Castano" style="background:#6b4a33;" title="Castano" aria-label="Castano"></button>
+        <button class="color-dot"        data-color="beige"   data-name="Beige"   style="background:#d6c8b1;" title="Beige" aria-label="Beige"></button>
+      </div>
+
+      <p class="stock-line">Stock disponible<small>Almacenado en deposito propio &middot; despacho en 24 h</small></p>
+
+      <div class="cta-buttons">
+        <button class="btn-buy">Comprar ahora</button>
+        <button class="btn-cart">Agregar al carrito</button>
+      </div>
+
+      <div class="perks">
+        <span><strong>Envio gratis</strong> a todo el pais en compras superiores a $ 10.000</span>
+        <span><strong>Devolucion gratis</strong> — tenes 30 dias desde que lo recibis</span>
+        <span><strong>Garantia de fabrica:</strong> 6 meses por defectos de fabricacion</span>
+        <span><strong>Armado:</strong> se entrega desarmado, con manual y herrajes. Tiempo estimado 1 h</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>Caracteristicas principales</h2>
+  <div class="specs-grid">
+    <dl>
+      <dt>Marca</dt><dd>Mundo Shop</dd>
+      <dt>Linea</dt><dd>Ropero</dd>
+      <dt>Modelo</dt><dd>Berlim</dd>
+      <dt>Color</dt><dd>Negro</dd>
+      <dt>Ancho</dt><dd>206 cm</dd>
+      <dt>Profundidad</dt><dd>38,5 cm</dd>
+      <dt>Altura</dt><dd>199 cm</dd>
+      <dt>Materiales de la estructura</dt><dd>MDF, MDP</dd>
+      <dt>Estilo</dt><dd>Moderno</dd>
+      <dt>Tipo de producto</dt><dd>Ropero</dd>
+      <dt>Con patas</dt><dd>No</dd>
+      <dt>Con espejo</dt><dd>No</dd>
+    </dl>
+    <dl>
+      <dt>Con puertas</dt><dd>Si</dd>
+      <dt>Cantidad de puertas</dt><dd>8</dd>
+      <dt>Tipo de apertura</dt><dd>Puerta batiente</dd>
+      <dt>Con estantes</dt><dd>Si</dd>
+      <dt>Cantidad de estantes</dt><dd>10</dd>
+      <dt>Con barrales</dt><dd>Si (2)</dd>
+      <dt>Con cajones</dt><dd>No</dd>
+      <dt>Con boxes</dt><dd>No</dd>
+      <dt>Con espacio para calzado</dt><dd>No</dd>
+      <dt>Con correderas telescopicas</dt><dd>No</dd>
+      <dt>Requiere ensamblado</dt><dd>Si — manual incluido, 1 h aprox.</dd>
+      <dt>Incluye manual de ensamblado</dt><dd>Si</dd>
+    </dl>
+  </div>
+</div>
+
+<div class="section">
+  <h2>Descripcion</h2>
+  <div class="desc">
+    <p><strong>Placard Berlim — 8 puertas.</strong> Dale a tu dormitorio el espacio y la organizacion que necesita con este ropero de 8 puertas, un placard pensado para quienes buscan practicidad, capacidad y estilo moderno en un solo mueble.</p>
+    <p>Fabricado en resistente MDF, este placard con 8 puertas y 10 estantes ofrece gran durabilidad y una estetica contemporanea que se adapta a cualquier ambiente. Su distribucion interior incluye 2 compartimentos con barrales para ropa larga o corta, junto con 10 estantes ideales para ropa doblada, calzado u objetos personales. Con un diseno de puertas batientes, se convierte en un ropero moderno pensado para mantener todo en orden y al alcance.</p>
+    <p>Su amplio tamano lo hace perfecto para dormitorios principales, juveniles o compartidos. Esta disponible en colores versatiles como blanco, negro, castano y beige, lo que permite combinarlo facilmente con distintos estilos de decoracion.</p>
+    <ul>
+      <li>8 puertas batientes en 4 modulos, con tiradores verticales en acabado bronce</li>
+      <li>10 estantes distribuidos en los 4 modulos</li>
+      <li>2 barrales metalicos para ropa colgada</li>
+      <li>Estructura en MDF / MDP con frente superior y zocalo en nogal</li>
+      <li>Interior en melamina blanca con cantos en madera</li>
+      <li>Medidas: 206 cm de ancho x 38,5 cm de profundidad x 199 cm de alto</li>
+    </ul>
+    <p>Optimiza tu espacio con este armario de 8 puertas. Requiere ensamblaje sencillo e incluye manual de instrucciones para que puedas armarlo en aproximadamente una hora.</p>
+    <p><strong>Contenido del envio:</strong> 1 placard desarmado, kit de herrajes, tiradores, barrales y manual de ensamblado paso a paso.</p>
+  </div>
+</div>
+
+<div class="section">
+  <h2>Galeria de fotos</h2>
+  <div class="photo-grid" id="photo-grid"></div>
+</div>
+
+<footer>Las medidas son aproximadas y pueden variar +/-1 cm por tolerancia de fabricacion. Las imagenes y el modelo 3D son ilustrativos.</footer>
+
+<!-- Lightbox -->
+<div class="lb" id="lb">
+  <div class="lb-close">&times;</div>
+  <img id="lb-img" src="" alt="">
+</div>
+
+<script>
+// ——— Galeria
+const photos = [
+  ['https://http2.mlstatic.com/D_890239-MLA112939004923_062026-F.jpg', 'Vista frontal en angulo'],
+  ['https://http2.mlstatic.com/D_805659-MLA112938739059_062026-F.jpg', 'Ambientado en dormitorio'],
+  ['https://http2.mlstatic.com/D_954160-MLA112939004935_062026-F.jpg', 'Interior: estantes y barrales'],
+  ['https://http2.mlstatic.com/D_651968-MLA112939594253_062026-F.jpg', 'Detalle del frente'],
+  ['https://http2.mlstatic.com/D_609228-MLA112939594271_062026-F.jpg', 'Vista de ambiente'],
+  ['https://http2.mlstatic.com/D_803723-MLA112938620573_062026-F.jpg', 'Detalle de tiradores'],
+  ['https://http2.mlstatic.com/D_840552-MLA111697082159_052026-F.jpg', 'Foto real instalado'],
+];
+const thumbsEl = document.getElementById('thumbs');
+const gridEl = document.getElementById('photo-grid');
+const mainImg = document.getElementById('main-img');
+
+photos.forEach(([src, alt], i) => {
+  const t = document.createElement('img');
+  t.src = src.replace('-F.jpg', '-I.jpg');
+  t.alt = alt;
+  if (i === 0) t.classList.add('active');
+  t.onclick = () => {
+    mainImg.src = src; mainImg.alt = alt;
+    thumbsEl.querySelectorAll('img').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+  };
+  thumbsEl.appendChild(t);
+
+  const g = document.createElement('img');
+  g.src = src; g.alt = alt; g.loading = 'lazy';
+  g.onclick = () => openLb(src, alt);
+  gridEl.appendChild(g);
+});
+mainImg.onclick = () => openLb(mainImg.src, mainImg.alt);
+
+// ——— Lightbox
+const lb = document.getElementById('lb');
+function openLb(src, alt) {
+  const im = document.getElementById('lb-img');
+  im.src = src; im.alt = alt || '';
+  lb.classList.add('show');
+}
+function closeLb() { lb.classList.remove('show'); }
+lb.addEventListener('click', closeLb);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLb(); });
+</script>
+
+<script src="./3d/three-d-stage.js"></script>
+<script type="module">
+  import { initRoperoBerlim } from './3d/ropero-berlim.js';
+
+  const stage = document.querySelector('three-d-stage');
+  const btn = document.getElementById('toggle');
+  const api = await initRoperoBerlim(stage, btn);
+
+  // Los circulos de color tambien cambian las hojas del modelo 3D.
+  const nameEl = document.getElementById('color-name');
+  document.getElementById('color-dots').addEventListener('click', (e) => {
+    const dot = e.target.closest('.color-dot');
+    if (!dot) return;
+    document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+    dot.classList.add('active');
+    nameEl.textContent = dot.dataset.name;
+    api.setColor(dot.dataset.color);
+  });
+
+  // Encuadres predefinidos.
+  document.getElementById('frontal').addEventListener('click', api.vistaFrontal);
+  document.getElementById('reset').addEventListener('click', api.vistaInicial);
+</script>
+</body>
+</html>
