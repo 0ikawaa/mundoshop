@@ -114,6 +114,15 @@ Dos trampas que costaron caro y estan comentadas en el codigo:
 - **La camara de sombra del cielo se abre segun la direccion.** Con un encuadre
   fijo habria que cortar la boveda a unos 45 grados, y ese corte se ve: la
   penumbra termina en una linea recta sobre el piso.
+- **Una excepcion dentro del bucle mata el visor para siempre.** El bucle de
+  three vuelve a pedir el cuadro *despues* de llamar al callback, asi que un
+  solo throw corta la cadena de `requestAnimationFrame` y deja `isAnimating` en
+  true; como `start()` sale temprano cuando ya cree estar animando, todo
+  `setAnimationLoop` posterior no hace nada. El canvas queda en blanco y en
+  consola hay un unico error, el del arranque. De ahi el `try` alrededor del
+  cuadro: un fallo tiene que avisar y dejar el estado consistente. El visor
+  arranca dentro de la pestana oculta, que mide cero y todavia no tiene destinos
+  de render — quien decide si el bucle corre es `fit()`, nadie mas.
 
 `stage.foto(escala)` vuelve a renderizar el encuadre actual al doble de tamano y
 baja un PNG. No es una captura de pantalla: es el mismo calculo en grande, asi

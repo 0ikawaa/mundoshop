@@ -287,11 +287,12 @@
     connectedCallback() {
       if (this._booted) {
         // Re-attached after a removal — resume what disconnected stopped.
+        // Quien decide si el bucle corre es `_fit`, no este camino: puede estar
+        // volviendo a un lugar oculto o de tamano cero.
         if (this._renderer) {
-          this._corriendo = true;
-          this._renderer.setAnimationLoop(this._loop);
           this._ro && this._ro.observe(this);
           this._io && this._io.observe(this);
+          this._fit && this._fit();
         }
         return;
       }
@@ -454,8 +455,12 @@
         controls.autoRotate = false;
       });
 
-      this._loop = () => {
+      const cuadro = () => {
         if (this._ocupado) return;      // foto() esta usando el renderer
+        // Sin destinos no hay nada que acumular. Pasa cuando el visor arranca
+        // dentro de una pestana oculta: mide cero, `fit` no llega a crearlos, y
+        // el primer cuadro caeria sobre un render target que todavia no existe.
+        if (!this._rtMuestra || !this._rtA || !this._rtB) return;
         controls.update();
         this._camera.updateMatrixWorld();
         const firma = this._firma();
@@ -468,6 +473,34 @@
         if (this._muestra >= this._total) return;
         this._dibujarMuestra(this._muestra);
         this._muestra += 1;
+      };
+
+      // El try no es decorativo. El bucle de animacion de three vuelve a pedir
+      // el cuadro DESPUES de llamar al callback:
+      //
+      //   function onAnimationFrame(time, frame) {
+      //     animationLoop(time, frame);
+      //     requestId = context.requestAnimationFrame(onAnimationFrame);
+      //   }
+      //
+      // asi que una sola excepcion corta la cadena de requestAnimationFrame y
+      // deja `isAnimating` en true. Como `start()` arranca con
+      // `if (isAnimating === true) return;`, cualquier setAnimationLoop
+      // posterior no hace nada: el visor queda mudo para siempre, con el canvas
+      // en blanco y sin un solo error mas en consola. Un fallo tiene que
+      // avisarse y dejar el estado consistente, no matar el visor en silencio.
+      this._loop = () => {
+        try {
+          cuadro();
+        } catch (err) {
+          console.error('three-d-stage: el bucle de render fallo', err);
+          this._corriendo = false;
+          renderer.setAnimationLoop(null);   // devuelve isAnimating a false
+          this._err.style.display = 'flex';
+          this._err.textContent =
+            'No se pudo dibujar la escena.\n\n' +
+            String(err && err.message ? err.message : err);
+        }
       };
 
       // ——— Pausa del bucle cuando el visor no se ve.
@@ -485,9 +518,13 @@
       this._conTamano = true;
       this._corriendo = true;
 
+      // Se sincroniza siempre, sin cortar por "ya estaba en ese estado". Pedir
+      // el bucle cuando ya corre no cuesta nada (`start()` sale solo), y esa
+      // comparacion era justamente lo que impedia recuperarse: bastaba con que
+      // el estado real y el anotado se separaran una vez para que el visor no
+      // volviera a arrancar nunca.
       const actualizarBucle = () => {
         const debeCorrer = this._enPantalla && this._conTamano;
-        if (debeCorrer === this._corriendo) return;
         this._corriendo = debeCorrer;
         renderer.setAnimationLoop(debeCorrer ? this._loop : null);
       };
@@ -521,10 +558,15 @@
       // Detached while three.js was fetching? Stay idle — the
       // connectedCallback resume starts the loop and observer on
       // reattach.
+      //
+      // El bucle no se arranca a mano aca: lo decide `actualizarBucle` desde el
+      // `fit()` de arriba. Arrancarlo igual era arrancarlo tambien cuando el
+      // visor nace dentro de la pestana oculta, que es el caso de todas las
+      // fichas.
       if (this.isConnected) {
         this._ro.observe(this);
         this._io.observe(this);
-        renderer.setAnimationLoop(this._loop);
+        actualizarBucle();
       }
 
       this._readyResolve({ THREE });
