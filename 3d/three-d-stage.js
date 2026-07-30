@@ -193,8 +193,10 @@
       if (this._booted) {
         // Re-attached after a removal — resume what disconnected stopped.
         if (this._renderer) {
+          this._corriendo = true;
           this._renderer.setAnimationLoop(this._loop);
           this._ro && this._ro.observe(this);
+          this._io && this._io.observe(this);
         }
         return;
       }
@@ -276,24 +278,60 @@
         controls.autoRotate = false;
       });
 
-      const fit = () => {
-        const w = this.clientWidth || 1;
-        const h = this.clientHeight || 1;
-        renderer.setSize(w, h);
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
-      };
-      fit();
-      this._ro = new ResizeObserver(fit);
       this._loop = () => {
         controls.update();
         renderer.render(scene, camera);
       };
+
+      // ——— Pausa del bucle cuando el visor no se ve.
+      // Sin esto sigue dibujando aunque este oculto tras una pestana o fuera
+      // de pantalla: se midieron 20 cuadros por segundo gastados en nada, y el
+      // scroll de la pagina se resiente.
+      //
+      // Se cruzan dos senales. El ResizeObserver detecta el display:none (la
+      // caja pasa a medir cero) y es el que manda, porque es el caso de las
+      // pestanas Fotos / Vista 3D. El IntersectionObserver cubre el otro caso,
+      // que el visor quede lejos en la pagina. Si alguna de las dos fallara, la
+      // otra alcanza para que el visor vuelva a andar: un visor congelado seria
+      // peor que gastar unos cuadros de mas.
+      this._enPantalla = true;
+      this._conTamano = true;
+      this._corriendo = true;
+
+      const actualizarBucle = () => {
+        const debeCorrer = this._enPantalla && this._conTamano;
+        if (debeCorrer === this._corriendo) return;
+        this._corriendo = debeCorrer;
+        renderer.setAnimationLoop(debeCorrer ? this._loop : null);
+      };
+      this._actualizarBucle = actualizarBucle;
+
+      const fit = () => {
+        const w = this.clientWidth;
+        const h = this.clientHeight;
+        this._conTamano = w > 0 && h > 0;
+        if (this._conTamano) {
+          renderer.setSize(w, h);
+          camera.aspect = w / h;
+          camera.updateProjectionMatrix();
+        }
+        actualizarBucle();
+      };
+      this._fit = fit;
+      fit();
+
+      this._ro = new ResizeObserver(fit);
+      this._io = new IntersectionObserver(([e]) => {
+        this._enPantalla = e.isIntersecting;
+        actualizarBucle();
+      }, { rootMargin: '200px' });
+
       // Detached while three.js was fetching? Stay idle — the
       // connectedCallback resume starts the loop and observer on
       // reattach.
       if (this.isConnected) {
         this._ro.observe(this);
+        this._io.observe(this);
         renderer.setAnimationLoop(this._loop);
       }
 
@@ -305,7 +343,9 @@
       // resumes both. (The renderer itself is kept — a move within the
       // document must not rebuild the scene.)
       if (this._renderer) this._renderer.setAnimationLoop(null);
+      this._corriendo = false;
       if (this._ro) this._ro.disconnect();
+      if (this._io) this._io.disconnect();
     }
 
     /** Show (and own) the object. Replaces any previous object, enables
@@ -347,6 +387,10 @@
       }
       this._scene.add(object);
       this._setButtonsEnabled(true);
+      // Red de seguridad: si el modelo se monta justo cuando el visor acaba de
+      // hacerse visible, esto reanuda el bucle sin esperar a que salte un
+      // observer.
+      if (this._fit) this._fit();
     }
 
     get _basename() {

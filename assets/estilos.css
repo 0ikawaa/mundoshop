@@ -162,11 +162,12 @@ p { text-wrap:pretty; }
 @media (max-width:640px) { .anuncio .opt { display:none; } }
 
 /* --- Cabecera ------------------------------------------------------------- */
+/* Fondo opaco y no translucido. Un `backdrop-filter` en una barra fija obliga
+   al navegador a rehacer el desenfoque de todo lo que pasa por detras en cada
+   cuadro de scroll, y es de las cosas que mas traban una pagina larga. */
 .cabecera {
   position:sticky; top:0; z-index:50;
-  background:rgba(255,255,255,.88);
-  backdrop-filter:saturate(180%) blur(14px);
-  -webkit-backdrop-filter:saturate(180%) blur(14px);
+  background:var(--papel);
   border-bottom:1px solid var(--linea);
 }
 .cabecera__inner {
@@ -440,6 +441,10 @@ three-d-stage:not(:defined) { visibility:hidden; }
 @media (max-width:480px) { .confianza__grid { grid-template-columns:1fr; } }
 
 /* --- Secciones ------------------------------------------------------------ */
+/* Sin content-visibility: se probo y empeoro. Las secciones quedaban con el
+   alto estimado hasta que se acercaban, asi que el alto total de la pagina
+   cambiaba mientras se scrolleaba y la barra saltaba. Sacada la galeria, la
+   ficha mide unos 3.900 px y no hay nada que ahorrar. */
 .seccion { padding-block:clamp(2.5rem, 5vw, 4.5rem); }
 .seccion__cabeza { max-width:62ch; margin-bottom:1.75rem; }
 .seccion__kicker {
@@ -485,17 +490,6 @@ three-d-stage:not(:defined) { visibility:hidden; }
   box-shadow:0 0 0 1px var(--azul);
 }
 .prosa strong { color:var(--tinta); font-weight:600; }
-
-/* Galeria */
-.galeria { display:grid; grid-template-columns:repeat(auto-fill, minmax(min(220px,100%),1fr)); gap:1rem; }
-.galeria > * { min-width:0; }
-.galeria button {
-  padding:0; border:1px solid var(--linea); background:var(--papel);
-  border-radius:var(--radio); overflow:hidden; cursor:zoom-in;
-  transition:box-shadow var(--medio), transform var(--medio);
-}
-.galeria button:hover { box-shadow:var(--sombra); transform:translateY(-3px); }
-.galeria img { width:100%; aspect-ratio:1; object-fit:cover; }
 
 /* Acordeon */
 .acordeon { max-width:min(760px,100%); }
@@ -579,9 +573,9 @@ three-d-stage:not(:defined) { visibility:hidden; }
   position:fixed; left:0; right:0; bottom:0; z-index:60;
   display:none; align-items:center; gap:.9rem;
   padding:.7rem var(--gutter) calc(.7rem + env(safe-area-inset-bottom));
-  background:rgba(255,255,255,.94);
-  backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  background:var(--papel);
   border-top:1px solid var(--linea);
+  box-shadow:0 -2px 12px rgba(16,20,45,.07);
   translate:0 110%;
   transition:translate var(--medio);
 }

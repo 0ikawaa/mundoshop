@@ -275,14 +275,6 @@
     </div>
   </section>
 
-  <section class="seccion revelar" id="galeria">
-    <div class="seccion__cabeza">
-      <span class="seccion__kicker">Galeria</span>
-      <h2>El Bariloche en detalle</h2>
-    </div>
-    <div class="galeria" id="galeria"></div>
-  </section>
-
   <section class="seccion revelar" id="preguntas">
     <div class="seccion__cabeza">
       <span class="seccion__kicker">Antes de comprar</span>
@@ -390,18 +382,6 @@ montarGaleria({
   tira: document.getElementById('miniaturas'),
   fotos: FOTOS,
   alAbrir: (i) => lightbox.abrir(i)
-});
-
-const grid = document.getElementById('galeria');
-FOTOS.forEach((f, i) => {
-  const b = document.createElement('button');
-  b.type = 'button';
-  b.setAttribute('aria-label', `Ampliar: ${f.alt}`);
-  const img = document.createElement('img');
-  img.src = f.src; img.alt = f.alt; img.loading = 'lazy'; img.decoding = 'async';
-  b.appendChild(img);
-  b.addEventListener('click', () => lightbox.abrir(i));
-  grid.appendChild(b);
 });
 
 montarRevelar();
