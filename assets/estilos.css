@@ -357,6 +357,16 @@ three-d-stage:not(:defined) { visibility:hidden; }
   font-size:var(--t-xs); font-weight:800; letter-spacing:.02em;
   padding:.3rem .5rem; border-radius:var(--radio-sm);
 }
+/* Producto sin publicacion activa: no hay precio que mostrar y no se inventa. */
+.precio--consultar { font-size:var(--t-lg); font-weight:800; letter-spacing:-.02em; color:var(--azul); }
+.aviso {
+  display:grid; grid-template-columns:18px 1fr; gap:.65rem; align-items:start;
+  background:var(--azul-50); border:1px solid var(--azul-100);
+  border-radius:var(--radio); padding:.8rem .95rem; margin-top:.7rem;
+  font-size:var(--t-sm); color:var(--tinta-2); line-height:1.55;
+}
+.aviso svg { width:17px; height:17px; color:var(--azul); margin-top:2px; }
+
 .cuotas { font-size:var(--t-base); color:var(--azul); font-weight:600; margin-top:.45rem; }
 .cuotas span { color:var(--gris); font-weight:400; }
 

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Previsualizar modelos — Mundo Shop</title>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.184.0/build/three.module.js",
+    "three/addons/controls/OrbitControls.js": "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js",
+    "three/addons/exporters/OBJExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js",
+    "three/addons/exporters/GLTFExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js"
+  }
+}
+</script>
+<style>
+body { font:14px/1.6 'Helvetica Neue',Helvetica,Arial,sans-serif; background:#f6f7fb; color:#12131a; margin:0; padding:20px; }
+.barra { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:14px; }
+select, button { font:500 14px inherit; padding:9px 14px; border:1px solid #e4e7f0; border-radius:8px; background:#fff; cursor:pointer; }
+three-d-stage { display:block; width:100%; height:78vh; border:1px solid #e4e7f0; border-radius:12px; overflow:hidden; }
+three-d-stage:not(:defined) { visibility:hidden; }
+#info { margin-top:10px; color:#6a6f85; font:12px ui-monospace,Consolas,monospace; }
+</style>
+</head>
+<body>
+
+<div class="barra">
+  <select id="modelo">
+    <option value="berlim">Berlim — 8 puertas batientes</option>
+    <option value="bariloche">Bariloche — 3 corredizas con espejo</option>
+    <option value="florencia">Florencia — 6 puertas y 2 cajones</option>
+  </select>
+  <button id="puertas" type="button">Abrir puertas</button>
+  <button id="frontal" type="button">Vista frontal</button>
+  <button id="tres" type="button">Vista 3/4</button>
+</div>
+
+<three-d-stage background="#ffffff"></three-d-stage>
+<p id="info">—</p>
+
+<script src="../3d/three-d-stage.js"></script>
+<script type="module">
+const stage = document.querySelector('three-d-stage');
+const info = document.getElementById('info');
+
+const CARGADORES = {
+  berlim: () => import('../3d/ropero-berlim.js').then(m => m.initRoperoBerlim),
+  bariloche: () => import('../3d/ropero-bariloche.js').then(m => m.initBariloche),
+  florencia: () => import('../3d/ropero-florencia.js').then(m => m.initFlorencia),
+};
+
+let api = null;
+
+async function cargar(clave) {
+  // El stage sostiene un solo objeto; setObject reemplaza el anterior.
+  const init = await CARGADORES[clave]();
+  api = await init(stage, document.getElementById('puertas'));
+  document.getElementById('puertas').textContent = 'Abrir puertas';
+  let mallas = 0, mats = new Set();
+  api.grupo.traverse(o => { if (o.isMesh) { mallas++; mats.add(o.material.name || o.material.uuid); } });
+  const b = new (await import('three')).Box3().setFromObject(api.grupo);
+  info.textContent = `${mallas} mallas · ${mats.size} materiales · caja ` +
+    `${(b.max.x - b.min.x).toFixed(3)} x ${(b.max.z - b.min.z).toFixed(3)} x ${(b.max.y - b.min.y).toFixed(3)} m` +
+    ` · base y=${b.min.y.toFixed(3)}`;
+}
+
+document.getElementById('modelo').addEventListener('change', (e) => {
+  // Recargamos la pagina: cada init engancha sus propios listeners y su
+  // ResizeObserver, y no vale la pena desmontarlos a mano en una herramienta.
+  location.hash = e.target.value;
+  location.reload();
+});
+document.getElementById('frontal').addEventListener('click', () => api && api.vistaFrontal());
+document.getElementById('tres').addEventListener('click', () => api && api.vistaInicial());
+
+const clave = (location.hash || '#berlim').slice(1);
+document.getElementById('modelo').value = clave;
+cargar(clave);
+</script>
+</body>
+</html>

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ropero Placard Florencia 6 Puertas con 2 Cajones | Mundo Shop</title>
+<meta name="description" content="Ropero Florencia de 6 puertas batientes con 2 cajones, barrales y espacio para calzado. MDF, 180 x 47 x 200 cm. Miralo en 3D y probalo en tu cuarto con realidad aumentada.">
+<meta name="theme-color" content="#041e7d">
+
+<script>document.documentElement.classList.add('js')</script>
+
+<link rel="icon" href="./favicon.svg" type="image/svg+xml">
+<link rel="icon" href="./favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="manifest" href="./site.webmanifest">
+
+<link rel="preload" href="./assets/fuentes/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="./assets/estilos.css">
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.184.0/build/three.module.js",
+    "three/addons/controls/OrbitControls.js": "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js",
+    "three/addons/exporters/OBJExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js",
+    "three/addons/exporters/GLTFExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js"
+  }
+}
+</script>
+</head>
+<body>
+
+<div class="anuncio">
+  <div class="contenedor anuncio__inner">
+    <span><b>Envio gratis</b> en compras superiores a $ 10.000</span>
+    <span class="sep opt">&bull;</span>
+    <span class="opt">Hasta 10 cuotas sin interes</span>
+    <span class="sep opt">&bull;</span>
+    <span class="opt">Despacho en 24 h</span>
+  </div>
+</div>
+
+<header class="cabecera">
+  <div class="contenedor cabecera__inner">
+    <a class="logo" href="./index.html" aria-label="Mundo Shop, inicio">
+      <svg viewBox="0 0 42 32" aria-hidden="true">
+        <path d="M2 7a5 5 0 0 1 5-5h19.6a4 4 0 0 1 2.9 1.2l10 10.4a2 2 0 0 1 0 2.8l-10 10.4a4 4 0 0 1-2.9 1.2H7a5 5 0 0 1-5-5z" fill="#041e7d"/>
+        <circle cx="31.5" cy="16" r="3.1" fill="#fff"/>
+        <rect x="7.5" y="12.6" width="14" height="2.6" rx="1.3" fill="#fff"/>
+        <rect x="7.5" y="17.6" width="9" height="2.6" rx="1.3" fill="#fae307"/>
+      </svg>
+      <span class="logo__texto"><span class="logo__1">Mundo</span><span class="logo__2">Shop</span></span>
+    </a>
+    <nav class="nav" aria-label="Categorias">
+      <a href="./index.html#catalogo">Dormitorio</a>
+      <a href="#">Living</a>
+      <a href="#">Comedor</a>
+      <a href="#">Oficina</a>
+      <a href="#">Ofertas</a>
+    </nav>
+    <div class="buscador">
+      <svg class="lupa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" placeholder="Buscar muebles, roperos, escritorios&hellip;" aria-label="Buscar productos">
+    </div>
+    <div class="acciones">
+      <button class="icono-btn" type="button" aria-label="Favoritos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+      </button>
+      <button class="icono-btn" type="button" aria-label="Mi cuenta">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+      <button class="icono-btn" type="button" aria-label="Carrito">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></svg>
+        <span class="contador" id="carrito-n" hidden>0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+<div class="contenedor">
+
+  <nav class="migas" aria-label="Ubicacion">
+    <ol>
+      <li><a href="./index.html">Inicio</a></li>
+      <li><a href="#">Hogar y Muebles</a></li>
+      <li><a href="#">Dormitorio</a></li>
+      <li aria-current="page">Placares y Roperos</li>
+    </ol>
+  </nav>
+
+  <div class="producto">
+    <div class="media">
+      <div class="media__tabs" role="tablist" aria-label="Como ver el producto">
+        <button class="tab" role="tab" id="tab-fotos" aria-selected="true" aria-controls="panel-fotos" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+          Fotos
+        </button>
+        <button class="tab" role="tab" id="tab-3d" aria-selected="false" aria-controls="panel-3d" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 7v10l9 5 9-5V7z"/><path d="m3 7 9 5 9-5M12 12v10"/></svg>
+          Vista 3D
+          <span class="tab__nuevo">NUEVO</span>
+        </button>
+      </div>
+
+      <div class="escenario">
+        <div class="panel" id="panel-fotos" role="tabpanel" aria-labelledby="tab-fotos">
+          <img class="foto-principal" id="foto" src="https://http2.mlstatic.com/D_931650-MLU110411473628_052026-F.jpg" alt="Ropero Florencia de 6 puertas con frentes de madera y blanco, vista en angulo" width="1200" height="1200" fetchpriority="high">
+        </div>
+        <div class="panel" id="panel-3d" role="tabpanel" aria-labelledby="tab-3d" hidden>
+          <three-d-stage name="ropero-florencia" background="#ffffff" limpio></three-d-stage>
+          <div class="cargando" id="cargando-3d"><div class="spinner"></div><span>Armando el modelo&hellip;</span></div>
+        </div>
+        <div class="escenario__barra" id="barra-3d" hidden>
+          <button class="chip" id="abrir-puertas" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h11v18H3zM14 6h7v15h-7"/></svg>
+            Abrir puertas
+          </button>
+          <button class="chip" id="vista-frontal" type="button">Vista frontal</button>
+          <button class="chip" id="vista-34" type="button">Vista 3/4</button>
+          <span class="pista">Arrastra para girar &middot; scroll para acercar</span>
+        </div>
+      </div>
+
+      <div class="miniaturas" id="miniaturas" aria-label="Miniaturas del producto"></div>
+    </div>
+
+    <div class="compra">
+      <p class="compra__meta">
+        <span class="marca">MUNDO SHOP</span><span>&bull;</span><span>Nuevo</span><span>&bull;</span><span>+25 vendidos</span>
+      </p>
+
+      <h1>Ropero Placard Florencia 6 Puertas con 2 Cajones &mdash; Beige</h1>
+
+      <p class="precio--consultar">Consultanos el precio</p>
+      <div class="aviso">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>
+        <span>Este modelo no tiene publicacion activa en este momento. Escribinos y te pasamos precio y disponibilidad.</span>
+      </div>
+
+      <div class="bloque">
+        <p class="bloque__titulo">Color: <b>Beige</b></p>
+        <div class="muestras" role="group" aria-label="Color">
+          <button class="muestra" type="button" aria-pressed="true" aria-label="Beige" style="background:#b08758"></button>
+        </div>
+      </div>
+
+      <div class="acciones-compra" id="cta">
+        <button class="btn btn--principal" type="button">Consultar disponibilidad</button>
+        <div id="ar-slot"></div>
+      </div>
+      <p class="ar-nota" id="ar-nota"></p>
+
+      <div class="beneficios">
+        <p class="beneficio">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 17V5a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h1"/><path d="M14 8h4l3 3v6h-2"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+          <span><b>Envio gratis a todo el pais</b>En compras superiores a $ 10.000. Entrega en 2 a 5 dias habiles.</span>
+        </p>
+        <p class="beneficio">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+          <span><b>Devolucion gratis</b>Tenes 30 dias desde que lo recibis para devolverlo sin costo.</span>
+        </p>
+        <p class="beneficio">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+          <span><b>Garantia de fabrica: 6 meses</b>Cubre defectos de fabricacion. Soporte directo con nosotros.</span>
+        </p>
+        <p class="beneficio">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z"/></svg>
+          <span><b>Se entrega desarmado</b>Con manual, herrajes y tiradores.</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="confianza">
+  <div class="contenedor confianza__grid">
+    <div class="confianza__item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="7" rx="1"/><rect x="3" y="13" width="18" height="7" rx="1"/><path d="M10 7.5h4M10 16.5h4"/></svg>
+      <div><b>2 cajones incluidos</b><span>Para ropa interior y accesorios, sin sumar una comoda aparte.</span></div>
+    </div>
+    <div class="confianza__item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6M8 8h8l2 12H6z"/></svg>
+      <div><b>Dos zonas de colgado</b><span>96 cm de caida en el centro y mas de un metro en la derecha.</span></div>
+    </div>
+    <div class="confianza__item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M12 8.5 8 10.6v4.3l4 2.1 4-2.1v-4.3z"/></svg>
+      <div><b>Probalo en tu cuarto</b><span>Con la camara del celular, a tamano real, antes de comprar.</span></div>
+    </div>
+    <div class="confianza__item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20M5 20V9l7-5 7 5v11"/><path d="M9 20v-6h6v6"/></svg>
+      <div><b>Espacio para calzado</b><span>Huecos abiertos en la base, pensados para zapatos y cajas.</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="contenedor">
+  <section class="seccion revelar" id="especificaciones">
+    <div class="seccion__cabeza">
+      <span class="seccion__kicker">Ficha tecnica</span>
+      <h2>Caracteristicas principales</h2>
+      <p class="seccion__sub">Medidas del producto armado. Pueden variar &plusmn;1 cm por tolerancia de fabricacion.</p>
+    </div>
+
+    <div class="medidas">
+      <div class="medida"><span>Ancho</span><b class="tabular">180<i>cm</i></b></div>
+      <div class="medida"><span>Altura</span><b class="tabular">200<i>cm</i></b></div>
+      <div class="medida"><span>Profundidad</span><b class="tabular">47<i>cm</i></b></div>
+    </div>
+
+    <div class="tarjeta">
+      <div class="specs">
+        <dl>
+          <dt>Marca</dt><dd>Mundo Shop</dd>
+          <dt>Modelo</dt><dd>Florencia</dd>
+          <dt>Color</dt><dd>Beige</dd>
+          <dt>Materiales de la estructura</dt><dd>MDF</dd>
+          <dt>Tipo de producto</dt><dd>Ropero</dd>
+          <dt>Cantidad de puertas</dt><dd>6</dd>
+          <dt>Tipo de apertura</dt><dd>Puerta batiente</dd>
+          <dt>Con espejo</dt><dd>No</dd>
+        </dl>
+        <dl>
+          <dt>Cantidad de cajones</dt><dd>2</dd>
+          <dt>Con estantes</dt><dd>Si</dd>
+          <dt>Barrales</dt><dd>2</dd>
+          <dt>Espacio para calzado</dt><dd>Si</dd>
+          <dt>Ancho de cada modulo</dt><dd>59 cm</dd>
+          <dt>Colgado del modulo central</dt><dd>96 cm de caida</dd>
+          <dt>Requiere ensamblado</dt><dd>Si, manual incluido</dd>
+          <dt>Incluye manual</dt><dd>Si</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="seccion revelar" id="descripcion">
+    <div class="seccion__cabeza">
+      <span class="seccion__kicker">El producto</span>
+      <h2>Tres modulos de 59 cm, cada uno resuelto distinto</h2>
+    </div>
+    <div class="prosa">
+      <p>El <strong>Florencia</strong> reparte 1,80 m de frente en tres modulos de 59 cm, y a cada uno le da un uso: el de la izquierda es estanteria pura, el del centro combina colgado con dos cajones, y el de la derecha suma colgado largo sobre dos huecos abiertos.</p>
+      <p>Los <strong>dos cajones</strong> del modulo central son la diferencia con un ropero comun: resuelven la ropa interior, las medias y los accesorios sin tener que meter una comoda aparte en la pieza.</p>
+      <p>De frente alterna materiales: las dos hojas de los extremos llevan <strong>listones verticales de madera</strong> y las cuatro del medio son blanco brillante. Los tiradores de madera van de a pares en el encuentro de cada par de puertas.</p>
+      <ul>
+        <li>6 puertas batientes en 3 modulos de 59 cm</li>
+        <li>2 cajones en el modulo central</li>
+        <li>2 barrales: 96 cm de caida en el centro, mas de un metro a la derecha</li>
+        <li>Estanteria completa en el modulo izquierdo</li>
+        <li>Huecos abiertos en la base para calzado</li>
+        <li>Estructura en MDF con frentes en madera y blanco</li>
+      </ul>
+      <p><strong>Contenido del envio:</strong> 1 placard desarmado, kit de herrajes, tiradores, barrales y manual de ensamblado paso a paso.</p>
+    </div>
+  </section>
+
+  <section class="seccion revelar" id="galeria">
+    <div class="seccion__cabeza">
+      <span class="seccion__kicker">Galeria</span>
+      <h2>El Florencia en detalle</h2>
+    </div>
+    <div class="galeria" id="galeria"></div>
+  </section>
+
+  <section class="seccion revelar" id="preguntas">
+    <div class="seccion__cabeza">
+      <span class="seccion__kicker">Antes de comprar</span>
+      <h2>Preguntas frecuentes</h2>
+    </div>
+    <div class="acordeon">
+      <details open>
+        <summary>&iquest;Cuanto lugar hay que dejar adelante?</summary>
+        <p class="cuerpo">Las puertas son batientes, asi que necesitan abrirse hacia afuera. Conviene dejar unos 60 cm libres delante del mueble. Si tenes la cama muy cerca, mira el Bariloche, que es corredizo.</p>
+      </details>
+      <details>
+        <summary>&iquest;Que entra en los cajones?</summary>
+        <p class="cuerpo">Son dos cajones de ancho completo del modulo central, de unos 20 cm de alto cada uno. Van bien para ropa interior, medias, cinturones y accesorios.</p>
+      </details>
+      <details>
+        <summary>&iquest;Entra ropa larga?</summary>
+        <p class="cuerpo">El modulo central tiene 96 cm de caida, que alcanza para camisas, camperas y pantalones colgados. El modulo derecho tiene mas de un metro libre, para vestidos y tapados.</p>
+      </details>
+      <details>
+        <summary>&iquest;Que tan fiel es la vista 3D?</summary>
+        <p class="cuerpo">Las alturas de cada hueco del modelo salen del plano acotado del fabricante: 43, 43, 48 y 37 cm en la columna izquierda, 96 cm de colgado en el centro y 37 y 37 a la derecha. No son estimaciones.</p>
+      </details>
+    </div>
+  </section>
+</div>
+</main>
+
+<footer class="pie">
+  <div class="contenedor pie__grid">
+    <div>
+      <span class="logo">
+        <svg viewBox="0 0 42 32" aria-hidden="true" style="height:28px">
+          <path d="M2 7a5 5 0 0 1 5-5h19.6a4 4 0 0 1 2.9 1.2l10 10.4a2 2 0 0 1 0 2.8l-10 10.4a4 4 0 0 1-2.9 1.2H7a5 5 0 0 1-5-5z" fill="#fff"/>
+          <circle cx="31.5" cy="16" r="3.1" fill="#041e7d"/>
+          <rect x="7.5" y="12.6" width="14" height="2.6" rx="1.3" fill="#041e7d"/>
+          <rect x="7.5" y="17.6" width="9" height="2.6" rx="1.3" fill="#fae307"/>
+        </svg>
+        <span class="logo__texto"><span class="logo__1">Mundo</span><span class="logo__2">Shop</span></span>
+      </span>
+      <p class="pie__sobre">Muebles para toda la casa, con deposito propio en Uruguay y envio a todo el pais. Cada ficha con modelo 3D y prueba en realidad aumentada.</p>
+    </div>
+    <div>
+      <h3>Comprar</h3>
+      <ul>
+        <li><a href="./index.html#catalogo">Dormitorio</a></li>
+        <li><a href="#">Living</a></li>
+        <li><a href="#">Comedor</a></li>
+        <li><a href="#">Oficina</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Ayuda</h3>
+      <ul>
+        <li><a href="#">Envios y entregas</a></li>
+        <li><a href="#">Cambios y devoluciones</a></li>
+        <li><a href="#">Garantia</a></li>
+        <li><a href="#">Contacto</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Mundo Shop</h3>
+      <ul>
+        <li><a href="#">Sobre nosotros</a></li>
+        <li><a href="#">Nuestro deposito</a></li>
+        <li><a href="#">Terminos y condiciones</a></li>
+        <li><a href="#">Privacidad</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="contenedor pie__legal">
+    <span>&copy; 2026 Mundo Shop. Todos los derechos reservados.</span>
+    <span>Las imagenes y los modelos 3D son ilustrativos.</span>
+  </div>
+</footer>
+
+<script src="./3d/three-d-stage.js"></script>
+<script type="module">
+import { montarGaleria, montarLightbox, montarRevelar, montarCarrito } from './assets/tienda.js';
+import { montarAR } from './3d/ar.js';
+
+const FOTOS = [
+  ['D_931650-MLU110411473628_052026', 'Ropero Florencia de 6 puertas, vista frontal en angulo'],
+  ['D_913340-MLU111349041607_052026', 'Plano acotado del interior del Florencia'],
+  ['D_974931-MLU111350342195_052026', 'Detalle de los frentes con listones de madera'],
+  ['D_913418-MLU111349455415_052026', 'Vista del mueble cerrado'],
+  ['D_759857-MLU110411354042_052026', 'El Florencia ambientado en un dormitorio'],
+  ['D_644382-MLU110411947524_052026', 'Detalle de los tiradores'],
+].map(([id, alt]) => ({
+  src: `https://http2.mlstatic.com/${id}-F.jpg`,
+  mini: `https://http2.mlstatic.com/${id}-I.jpg`,
+  alt
+}));
+
+const lightbox = montarLightbox(FOTOS);
+montarGaleria({
+  principal: document.getElementById('foto'),
+  tira: document.getElementById('miniaturas'),
+  fotos: FOTOS,
+  alAbrir: (i) => lightbox.abrir(i)
+});
+
+const grid = document.getElementById('galeria');
+FOTOS.forEach((f, i) => {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.setAttribute('aria-label', `Ampliar: ${f.alt}`);
+  const img = document.createElement('img');
+  img.src = f.src; img.alt = f.alt; img.loading = 'lazy'; img.decoding = 'async';
+  b.appendChild(img);
+  b.addEventListener('click', () => lightbox.abrir(i));
+  grid.appendChild(b);
+});
+
+montarRevelar();
+montarCarrito({ contador: document.getElementById('carrito-n'), botones: [] });
+
+const notaAR = document.getElementById('ar-nota');
+const ar = montarAR({
+  contenedor: document.getElementById('ar-slot'),
+  modelo: { beige: { glb: './3d/models/ropero-florencia-beige.glb', usdz: './3d/models/ropero-florencia-beige.usdz' } },
+  titulo: 'Ropero Florencia 6 puertas',
+  clase: 'btn btn--linea',
+  alSinSoporte: () => {
+    notaAR.innerHTML = '<b>&iquest;Entra en tu pared?</b> Abri esta pagina desde el celular ' +
+      'para apoyar el ropero en tu cuarto con la camara, a tamano real.';
+  }
+});
+if (ar.plataforma) {
+  notaAR.textContent = 'Se abre la camara y podes apoyar el ropero en el piso de tu cuarto, a tamano real.';
+}
+
+const tabFotos = document.getElementById('tab-fotos');
+const tab3d = document.getElementById('tab-3d');
+const barra3d = document.getElementById('barra-3d');
+const cargando = document.getElementById('cargando-3d');
+let api3d = null;
+
+function activar(es3d) {
+  tab3d.setAttribute('aria-selected', String(es3d));
+  tabFotos.setAttribute('aria-selected', String(!es3d));
+  document.getElementById('panel-3d').hidden = !es3d;
+  document.getElementById('panel-fotos').hidden = es3d;
+  barra3d.hidden = !es3d;
+  document.getElementById('miniaturas').hidden = es3d;
+}
+
+tabFotos.addEventListener('click', () => activar(false));
+tab3d.addEventListener('click', async () => {
+  activar(true);
+  if (api3d) { api3d.vistaInicial(); return; }
+  try {
+    const { initFlorencia } = await import('./3d/ropero-florencia.js');
+    api3d = await initFlorencia(
+      document.querySelector('three-d-stage'),
+      document.getElementById('abrir-puertas')
+    );
+    cargando.remove();
+    document.getElementById('vista-frontal').addEventListener('click', api3d.vistaFrontal);
+    document.getElementById('vista-34').addEventListener('click', api3d.vistaInicial);
+  } catch (e) {
+    cargando.innerHTML = '<span>No se pudo cargar la vista 3D. Proba recargar la pagina.</span>';
+    console.error(e);
+  }
+});
+</script>
+</body>
+</html>

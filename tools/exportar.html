@@ -14,15 +14,15 @@
 }
 </script>
 <style>
-body { font:14px/1.6 'Helvetica Neue',Helvetica,Arial,sans-serif; background:#faf8f4; color:#22201d; max-width:760px; margin:0 auto; padding:32px 24px 60px; }
+body { font:14px/1.6 'Helvetica Neue',Helvetica,Arial,sans-serif; background:#f6f7fb; color:#12131a; max-width:800px; margin:0 auto; padding:32px 24px 60px; }
 h1 { font-size:20px; margin:0 0 6px; }
-p.lead { color:#6f6a62; margin:0 0 24px; }
-button { font:600 14px inherit; background:#2d5a27; color:#fff; border:none; border-radius:6px; padding:12px 20px; cursor:pointer; }
-button:hover { background:#1e4a1a; }
+p.lead { color:#6a6f85; margin:0 0 24px; }
+button { font:600 14px inherit; background:#041e7d; color:#fff; border:none; border-radius:8px; padding:12px 20px; cursor:pointer; }
+button:hover { background:#03145e; }
 button[disabled] { opacity:.5; cursor:default; }
-pre { background:#fff; border:1px solid #e3ded4; border-radius:8px; padding:14px 16px; margin-top:20px; white-space:pre-wrap; font:12px/1.7 ui-monospace,Menlo,Consolas,monospace; min-height:60px; }
-.ok { color:#2d7a27; } .err { color:#a3301e; }
-code { background:#efece5; padding:1px 5px; border-radius:3px; }
+pre { background:#fff; border:1px solid #e4e7f0; border-radius:10px; padding:14px 16px; margin-top:20px; white-space:pre-wrap; font:12px/1.7 ui-monospace,Menlo,Consolas,monospace; min-height:60px; }
+.ok { color:#0f7a3d; } .err { color:#a3301e; } .tit { font-weight:700; }
+code { background:#eef0f7; padding:1px 5px; border-radius:3px; }
 </style>
 </head>
 <body>
@@ -30,20 +30,29 @@ code { background:#efece5; padding:1px 5px; border-radius:3px; }
 <h1>Exportar modelos para AR</h1>
 <p class="lead">
   Genera el <code>.glb</code> (Android / Scene Viewer) y el <code>.usdz</code>
-  (iPhone / AR Quick Look) de cada color y los guarda en <code>3d/models/</code>
-  a traves del servidor de desarrollo. Los modelos salen con las puertas cerradas
-  y sin contenido interior: en AR se mira el mueble contra la pared, y la ropa
-  solo agrega peso al archivo.
+  (iPhone / AR Quick Look) de cada producto y color, y los deja en
+  <code>3d/models/</code> a traves del servidor de desarrollo. Salen con las
+  puertas cerradas y sin contenido interior: en AR se mira el mueble contra la
+  pared, y la ropa solo suma peso al archivo.
 </p>
 
-<button id="run" type="button">Generar los 8 archivos</button>
+<button id="run" type="button">Generar todos</button>
 <pre id="log">Listo para generar.</pre>
 
 <script type="module">
 import * as THREE from 'three';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { USDZExporter } from 'three/addons/exporters/USDZExporter.js';
-import { construirRopero, COLORES } from '../3d/ropero-berlim.js';
+
+import { construirRopero, COLORES as coloresBerlim } from '../3d/ropero-berlim.js';
+import { construirBariloche, COLORES as coloresBariloche } from '../3d/ropero-bariloche.js';
+import { construirFlorencia, COLORES as coloresFlorencia } from '../3d/ropero-florencia.js';
+
+const PRODUCTOS = [
+  { base: 'ropero-berlim', construir: construirRopero, colores: Object.keys(coloresBerlim) },
+  { base: 'ropero-bariloche', construir: construirBariloche, colores: Object.keys(coloresBariloche) },
+  { base: 'ropero-florencia', construir: construirFlorencia, colores: Object.keys(coloresFlorencia) },
+];
 
 const logEl = document.getElementById('log');
 const btn = document.getElementById('run');
@@ -55,47 +64,45 @@ const log = (t, cls) => {
 
 async function guardar(nombre, datos) {
   const r = await fetch('/__escribir?nombre=' + encodeURIComponent(nombre), {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/octet-stream' },
-    body: datos
+    method: 'POST', headers: { 'Content-Type': 'application/octet-stream' }, body: datos
   });
   if (!r.ok) throw new Error(`${nombre}: HTTP ${r.status}`);
-  const j = await r.json();
-  return j.bytes;
+  return (await r.json()).bytes;
 }
-
 const kb = (n) => (n / 1024).toFixed(0) + ' KB';
 
 btn.addEventListener('click', async () => {
   btn.disabled = true;
   lineas = [];
   log('Generando…\n');
+  let total = 0;
 
-  try {
-    for (const color of Object.keys(COLORES)) {
-      // Puertas cerradas y sin contenido: es lo que se quiere ver contra la pared.
-      const { grupo } = construirRopero(THREE, { color, contenido: false });
+  for (const prod of PRODUCTOS) {
+    log(prod.base, 'tit');
+    for (const color of prod.colores) {
+      try {
+        const { grupo } = prod.construir(THREE, { color, contenido: false });
 
-      // Las mallas con array de materiales las descarta USDZExporter en
-      // silencio; avisamos fuerte si alguna se colo en el modelo.
-      let multi = 0;
-      grupo.traverse(o => { if (o.isMesh && Array.isArray(o.material)) multi++; });
-      if (multi) log(`  AVISO: ${multi} mallas con array de materiales — no van a salir en el USDZ`, 'err');
+        // USDZExporter descarta en silencio las mallas con array de materiales.
+        let multi = 0;
+        grupo.traverse(o => { if (o.isMesh && Array.isArray(o.material)) multi++; });
+        if (multi) log(`  AVISO: ${multi} mallas con array de materiales — no salen en el USDZ`, 'err');
 
-      const glb = await new GLTFExporter().parseAsync(grupo, { binary: true });
-      const nGlb = await guardar(`ropero-berlim-${color}.glb`, glb);
-      log(`  ropero-berlim-${color}.glb   ${kb(nGlb)}`, 'ok');
+        const glb = await new GLTFExporter().parseAsync(grupo, { binary: true });
+        const nGlb = await guardar(`${prod.base}-${color}.glb`, glb);
 
-      // quickLookCompatible acomoda los materiales a lo que acepta AR Quick Look.
-      const usdz = await new USDZExporter().parseAsync(grupo, { quickLookCompatible: true });
-      const nUsdz = await guardar(`ropero-berlim-${color}.usdz`, usdz);
-      log(`  ropero-berlim-${color}.usdz  ${kb(nUsdz)}`, 'ok');
+        const usdz = await new USDZExporter().parseAsync(grupo, { quickLookCompatible: true });
+        const nUsdz = await guardar(`${prod.base}-${color}.usdz`, usdz);
+
+        log(`  ${color.padEnd(9)} glb ${kb(nGlb).padStart(8)}   usdz ${kb(nUsdz).padStart(8)}`, 'ok');
+        total += 2;
+      } catch (e) {
+        log(`  ${color}: FALLO — ${e.message}`, 'err');
+        console.error(e);
+      }
     }
-    log('\nListo. Falta commitear 3d/models/ y pushear para que Vercel los sirva.', 'ok');
-  } catch (e) {
-    log('\nFALLO: ' + e.message, 'err');
-    console.error(e);
   }
+  log(`\n${total} archivos. Falta commitear 3d/models/ y pushear.`, 'ok');
   btn.disabled = false;
 });
 </script>

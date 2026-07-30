@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ropero Bariloche 3 Puertas Corredizas con Espejo — Blanco | Mundo Shop</title>
+<meta name="description" content="Ropero Bariloche de 3 puertas corredizas con espejo, 8 estantes y barral. MDP, 180 x 45 x 180 cm. Miralo en 3D y probalo en tu cuarto con realidad aumentada.">
+<meta name="theme-color" content="#041e7d">
+
+<script>document.documentElement.classList.add('js')</script>
+
+<link rel="icon" href="./favicon.svg" type="image/svg+xml">
+<link rel="icon" href="./favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="manifest" href="./site.webmanifest">
+
+<link rel="preload" href="./assets/fuentes/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="./assets/estilos.css">
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.184.0/build/three.module.js",
+    "three/addons/controls/OrbitControls.js": "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js",
+    "three/addons/exporters/OBJExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js",
+    "three/addons/exporters/GLTFExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js"
+  }
+}
+</script>
+</head>
+<body>
+
+<div class="anuncio">
+  <div class="contenedor anuncio__inner">
+    <span><b>Envio gratis</b> en compras superiores a $ 10.000</span>
+    <span class="sep opt">&bull;</span>
+    <span class="opt">Hasta 10 cuotas sin interes</span>
+    <span class="sep opt">&bull;</span>
+    <span class="opt">Despacho en 24 h</span>
+  </div>
+</div>
+
+<header class="cabecera">
+  <div class="contenedor cabecera__inner">
+    <a class="logo" href="./index.html" aria-label="Mundo Shop, inicio">
+      <svg viewBox="0 0 42 32" aria-hidden="true">
+        <path d="M2 7a5 5 0 0 1 5-5h19.6a4 4 0 0 1 2.9 1.2l10 10.4a2 2 0 0 1 0 2.8l-10 10.4a4 4 0 0 1-2.9 1.2H7a5 5 0 0 1-5-5z" fill="#041e7d"/>
+        <circle cx="31.5" cy="16" r="3.1" fill="#fff"/>
+        <rect x="7.5" y="12.6" width="14" height="2.6" rx="1.3" fill="#fff"/>
+        <rect x="7.5" y="17.6" width="9" height="2.6" rx="1.3" fill="#fae307"/>
+      </svg>
+      <span class="logo__texto"><span class="logo__1">Mundo</span><span class="logo__2">Shop</span></span>
+    </a>
+    <nav class="nav" aria-label="Categorias">
+      <a href="./index.html#catalogo">Dormitorio</a>
+      <a href="#">Living</a>
+      <a href="#">Comedor</a>
+      <a href="#">Oficina</a>
+      <a href="#">Ofertas</a>
+    </nav>
+    <div class="buscador">
+      <svg class="lupa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" placeholder="Buscar muebles, roperos, escritorios&hellip;" aria-label="Buscar productos">
+    </div>
+    <div class="acciones">
+      <button class="icono-btn" type="button" aria-label="Favoritos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+      </button>
+      <button class="icono-btn" type="button" aria-label="Mi cuenta">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+      <button class="icono-btn" type="button" aria-label="Carrito">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></svg>
+        <span class="contador" id="carrito-n" hidden>0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+<div class="contenedor">
+
+  <nav class="migas" aria-label="Ubicacion">
+    <ol>
+      <li><a href="./index.html">Inicio</a></li>
+      <li><a href="#">Hogar y Muebles</a></li>
+      <li><a href="#">Dormitorio</a></li>
+      <li aria-current="page">Placares y Roperos</li>
+    </ol>
+  </nav>
+
+  <div class="producto">
+    <div class="media">
+      <div class="media__tabs" role="tablist" aria-label="Como ver el producto">
+        <button class="tab" role="tab" id="tab-fotos" aria-selected="true" aria-controls="panel-fotos" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+          Fotos
+        </button>
+        <button class="tab" role="tab" id="tab-3d" aria-selected="false" aria-controls="panel-3d" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 7v10l9 5 9-5V7z"/><path d="m3 7 9 5 9-5M12 12v10"/></svg>
+          Vista 3D
+          <span class="tab__nuevo">NUEVO</span>
+        </button>
+      </div>
+
+      <div class="escenario">
+        <div class="panel" id="panel-fotos" role="tabpanel" aria-labelledby="tab-fotos">
+          <img class="foto-principal" id="foto" src="https://http2.mlstatic.com/D_963171-MLA112682934243_062026-F.jpg" alt="Ropero Bariloche blanco de 3 puertas corredizas con espejo, vista en angulo" width="1200" height="1200" fetchpriority="high">
+        </div>
+        <div class="panel" id="panel-3d" role="tabpanel" aria-labelledby="tab-3d" hidden>
+          <three-d-stage name="ropero-bariloche" background="#ffffff" limpio></three-d-stage>
+          <div class="cargando" id="cargando-3d"><div class="spinner"></div><span>Armando el modelo&hellip;</span></div>
+        </div>
+        <div class="escenario__barra" id="barra-3d" hidden>
+          <button class="chip" id="abrir-puertas" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18v16H3z"/><path d="M9 4v16M15 4v16"/></svg>
+            Abrir puertas
+          </button>
+          <button class="chip" id="vista-frontal" type="button">Vista frontal</button>
+          <button class="chip" id="vista-34" type="button">Vista 3/4</button>
+          <span class="pista">Arrastra para girar &middot; scroll para acercar</span>
+        </div>
+      </div>
+
+      <div class="miniaturas" id="miniaturas" aria-label="Miniaturas del producto"></div>
+    </div>
+
+    <div class="compra">
+      <p class="compra__meta">
+        <span class="marca">MUNDO SHOP</span><span>&bull;</span><span>Nuevo</span><span>&bull;</span><span>+500 vendidos</span>
+      </p>
+
+      <h1>Ropero Bariloche 3 Puertas Corredizas con Espejo &mdash; Blanco</h1>
+
+      <div class="estrellas" aria-label="4,5 de 5 estrellas sobre 290 opiniones">
+        <span class="puntos" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor" opacity=".45"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+        </span>
+        <span class="tabular">4,5</span><span>(290 opiniones)</span>
+      </div>
+
+      <p class="precio-anterior tabular">$ 7.890</p>
+      <div class="precio-fila">
+        <p class="precio tabular"><span class="simbolo">$</span>6.990</p>
+        <span class="off">11% OFF</span>
+      </div>
+      <p class="cuotas tabular">10 cuotas sin interes de $ 699 <span>&middot; sin recargo</span></p>
+
+      <div class="bloque">
+        <p class="bloque__titulo">Color: <b>Blanco</b></p>
+        <div class="muestras" role="group" aria-label="Color">
+          <button class="muestra" type="button" aria-pressed="true" aria-label="Blanco" style="background:#f4f3f0"></button>
+        </div>
+      </div>
+
+      <div class="bloque">
+        <p class="stock">Stock disponible</p>
+        <p class="stock-nota">Almacenado en deposito propio &middot; despacho en 24 h habiles</p>
+      </div>
+
+      <div class="acciones-compra" id="cta">
+        <button class="btn btn--principal" type="button">Comprar ahora</button>
+        <button class="btn btn--secundario" type="button" data-agregar>Agregar al carrito</button>
+        <div id="ar-slot"></div>
+      </div>
+      <p class="ar-nota" id="ar-nota"></p>
+
+      <div class="beneficios">
+        <p class="beneficio">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 17V5a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h1"/><path d="M14 8h4l3 3v6h-2"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+          <span><b>Envio gratis a todo el pais</b>En compras superiores a $ 10.000. Entrega en 2 a 5 dias habiles.</span>
+        </p>
+        <p class="beneficio">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+          <span><b>Devolucion gratis</b>Tenes 30 dias desde que lo recibis para devolverlo sin costo.</span>
+        </p>
+        <p class="beneficio">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+          <span><b>Garantia de fabrica: 6 meses</b>Cubre defectos de fabricacion. Soporte directo con nosotros.</span>
+        </p>
+        <p class="beneficio">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z"/></svg>
+          <span><b>Se entrega desarmado</b>Con manual, herrajes y rieles de aluminio.</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="confianza">
+  <div class="contenedor confianza__grid">
+    <div class="confianza__item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M4 9h16"/></svg>
+      <div><b>No come lugar</b><span>Las hojas corren sobre riel: no hace falta dejar espacio libre delante.</span></div>
+    </div>
+    <div class="confianza__item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M9 6h6M9 10h6"/></svg>
+      <div><b>Espejo integrado</b><span>En la hoja del centro, sin ocupar pared ni sumar un mueble mas.</span></div>
+    </div>
+    <div class="confianza__item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M12 8.5 8 10.6v4.3l4 2.1 4-2.1v-4.3z"/></svg>
+      <div><b>Probalo en tu cuarto</b><span>Con la camara del celular, a tamano real, antes de comprar.</span></div>
+    </div>
+    <div class="confianza__item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
+      <div><b>10 cuotas sin interes</b><span>Con todas las tarjetas. Sin recargo ni letra chica.</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="contenedor">
+  <section class="seccion revelar" id="especificaciones">
+    <div class="seccion__cabeza">
+      <span class="seccion__kicker">Ficha tecnica</span>
+      <h2>Caracteristicas principales</h2>
+      <p class="seccion__sub">Medidas del producto armado. Pueden variar &plusmn;1 cm por tolerancia de fabricacion.</p>
+    </div>
+
+    <div class="medidas">
+      <div class="medida"><span>Ancho</span><b class="tabular">180<i>cm</i></b></div>
+      <div class="medida"><span>Altura</span><b class="tabular">180<i>cm</i></b></div>
+      <div class="medida"><span>Profundidad</span><b class="tabular">45<i>cm</i></b></div>
+    </div>
+
+    <div class="tarjeta">
+      <div class="specs">
+        <dl>
+          <dt>Marca</dt><dd>Mundo Shop</dd>
+          <dt>Linea</dt><dd>Dormitorio</dd>
+          <dt>Modelo</dt><dd>Bariloche</dd>
+          <dt>Color</dt><dd>Blanco</dd>
+          <dt>Materiales de la estructura</dt><dd>MDP</dd>
+          <dt>Acabado</dt><dd>Mate</dd>
+          <dt>Estilo</dt><dd>Minimalista</dd>
+          <dt>Tipo de producto</dt><dd>Ropero</dd>
+          <dt>Con patas</dt><dd>No</dd>
+        </dl>
+        <dl>
+          <dt>Cantidad de puertas</dt><dd>3</dd>
+          <dt>Tipo de apertura</dt><dd>Puerta corrediza</dd>
+          <dt>Espejo</dt><dd>Si, 1 en la hoja central</dd>
+          <dt>Cantidad de estantes</dt><dd>8</dd>
+          <dt>Barrales</dt><dd>Si</dd>
+          <dt>Cantidad de cajones</dt><dd>No tiene</dd>
+          <dt>Ancho de la abertura</dt><dd>155 cm de luz interior</dd>
+          <dt>Profundidad de estantes</dt><dd>33,5 cm</dd>
+          <dt>Requiere ensamblado</dt><dd>Si, manual incluido</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="seccion revelar" id="descripcion">
+    <div class="seccion__cabeza">
+      <span class="seccion__kicker">El producto</span>
+      <h2>Corredizas: no hay que dejar lugar libre adelante</h2>
+    </div>
+    <div class="prosa">
+      <p>El <strong>Bariloche</strong> esta pensado para dormitorios donde el espacio no alcanza para puertas rebatibles. Las tres hojas se desplazan sobre riel de aluminio, asi que se puede poner con la cama o una comoda justo enfrente sin perder acceso.</p>
+      <p>La hoja del medio lleva <strong>espejo</strong>, que ademas de resolver el vestirse amplia visualmente la habitacion. Los tiradores verticales en acabado cobre van sobre el borde de afuera de cada hoja lateral, que es de donde se empuja.</p>
+      <p>Adentro hay dos zonas: una columna de estantes para ropa doblada y ropa blanca, y un sector de colgado con barral metalico. Abajo quedan huecos abiertos que funcionan como <strong>espacio para calzado</strong>.</p>
+      <ul>
+        <li>3 puertas corredizas sobre riel de aluminio, superior e inferior</li>
+        <li>Espejo integrado en la hoja central</li>
+        <li>8 estantes de 33,5 cm de profundidad</li>
+        <li>Barral metalico para perchas</li>
+        <li>Estructura en MDP con acabado mate</li>
+        <li>180 cm de ancho exterior y 155 cm de luz interior</li>
+      </ul>
+      <p><strong>Contenido del envio:</strong> 1 placard desarmado, kit de herrajes, rieles de aluminio, tiradores y manual de ensamblado paso a paso.</p>
+    </div>
+  </section>
+
+  <section class="seccion revelar" id="galeria">
+    <div class="seccion__cabeza">
+      <span class="seccion__kicker">Galeria</span>
+      <h2>El Bariloche en detalle</h2>
+    </div>
+    <div class="galeria" id="galeria"></div>
+  </section>
+
+  <section class="seccion revelar" id="preguntas">
+    <div class="seccion__cabeza">
+      <span class="seccion__kicker">Antes de comprar</span>
+      <h2>Preguntas frecuentes</h2>
+    </div>
+    <div class="acordeon">
+      <details open>
+        <summary>&iquest;Cuanto lugar hay que dejar adelante?</summary>
+        <p class="cuerpo">Nada. Es la ventaja de las corredizas: las hojas se desplazan sobre el propio frente del mueble en lugar de abrirse hacia afuera. Podes ponerlo en un pasillo o con la cama pegada enfrente.</p>
+      </details>
+      <details>
+        <summary>&iquest;Se abren las tres puertas a la vez?</summary>
+        <p class="cuerpo">No, y ningun ropero corredizo lo hace. Las hojas corren sobre dos planos de riel, asi que siempre queda una tapando parte del frente. En la practica accedes a dos tercios del interior por vez.</p>
+      </details>
+      <details>
+        <summary>&iquest;El espejo viene colocado?</summary>
+        <p class="cuerpo">Si, viene montado de fabrica sobre la hoja central con su marco. No hay que pegarlo ni atornillarlo durante el armado.</p>
+      </details>
+      <details>
+        <summary>&iquest;Entra ropa larga?</summary>
+        <p class="cuerpo">El sector de colgado tiene el barral en la parte alta y queda libre hasta el estante intermedio. Entran camisas, camperas y vestidos cortos. Para tapados largos conviene mirar el Berlim, que tiene colgado de piso a barral.</p>
+      </details>
+    </div>
+  </section>
+</div>
+</main>
+
+<footer class="pie">
+  <div class="contenedor pie__grid">
+    <div>
+      <span class="logo">
+        <svg viewBox="0 0 42 32" aria-hidden="true" style="height:28px">
+          <path d="M2 7a5 5 0 0 1 5-5h19.6a4 4 0 0 1 2.9 1.2l10 10.4a2 2 0 0 1 0 2.8l-10 10.4a4 4 0 0 1-2.9 1.2H7a5 5 0 0 1-5-5z" fill="#fff"/>
+          <circle cx="31.5" cy="16" r="3.1" fill="#041e7d"/>
+          <rect x="7.5" y="12.6" width="14" height="2.6" rx="1.3" fill="#041e7d"/>
+          <rect x="7.5" y="17.6" width="9" height="2.6" rx="1.3" fill="#fae307"/>
+        </svg>
+        <span class="logo__texto"><span class="logo__1">Mundo</span><span class="logo__2">Shop</span></span>
+      </span>
+      <p class="pie__sobre">Muebles para toda la casa, con deposito propio en Uruguay y envio a todo el pais. Cada ficha con modelo 3D y prueba en realidad aumentada.</p>
+    </div>
+    <div>
+      <h3>Comprar</h3>
+      <ul>
+        <li><a href="./index.html#catalogo">Dormitorio</a></li>
+        <li><a href="#">Living</a></li>
+        <li><a href="#">Comedor</a></li>
+        <li><a href="#">Oficina</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Ayuda</h3>
+      <ul>
+        <li><a href="#">Envios y entregas</a></li>
+        <li><a href="#">Cambios y devoluciones</a></li>
+        <li><a href="#">Garantia</a></li>
+        <li><a href="#">Contacto</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Mundo Shop</h3>
+      <ul>
+        <li><a href="#">Sobre nosotros</a></li>
+        <li><a href="#">Nuestro deposito</a></li>
+        <li><a href="#">Terminos y condiciones</a></li>
+        <li><a href="#">Privacidad</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="contenedor pie__legal">
+    <span>&copy; 2026 Mundo Shop. Todos los derechos reservados.</span>
+    <span>Las imagenes y los modelos 3D son ilustrativos.</span>
+  </div>
+</footer>
+
+<div class="compra-fija" id="compra-fija">
+  <div class="compra-fija__precio">
+    <b class="tabular">$ 6.990</b>
+    <span class="tabular">10 x $ 699</span>
+  </div>
+  <button class="btn btn--principal" type="button">Comprar ahora</button>
+</div>
+
+<script src="./3d/three-d-stage.js"></script>
+<script type="module">
+import { montarGaleria, montarLightbox, montarRevelar, montarBarraFija, montarCarrito } from './assets/tienda.js';
+import { montarAR } from './3d/ar.js';
+
+const FOTOS = [
+  ['D_963171-MLA112682934243_062026', 'Ropero Bariloche blanco de 3 puertas corredizas, vista en angulo'],
+  ['D_762828-MLA111609463734_062026', 'Vista frontal del Bariloche con el espejo central'],
+  ['D_796589-MLA111609727420_062026', 'Interior: columna de estantes y sector de colgado'],
+  ['D_828457-MLA112541800028_062026', 'Detalle del riel y las hojas corredizas'],
+  ['D_632850-MLA113715188865_062026', 'Detalle del tirador en acabado cobre'],
+  ['D_854478-MLA112542008286_062026', 'El Bariloche ambientado en un dormitorio'],
+].map(([id, alt]) => ({
+  src: `https://http2.mlstatic.com/${id}-F.jpg`,
+  mini: `https://http2.mlstatic.com/${id}-I.jpg`,
+  alt
+}));
+
+const lightbox = montarLightbox(FOTOS);
+montarGaleria({
+  principal: document.getElementById('foto'),
+  tira: document.getElementById('miniaturas'),
+  fotos: FOTOS,
+  alAbrir: (i) => lightbox.abrir(i)
+});
+
+const grid = document.getElementById('galeria');
+FOTOS.forEach((f, i) => {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.setAttribute('aria-label', `Ampliar: ${f.alt}`);
+  const img = document.createElement('img');
+  img.src = f.src; img.alt = f.alt; img.loading = 'lazy'; img.decoding = 'async';
+  b.appendChild(img);
+  b.addEventListener('click', () => lightbox.abrir(i));
+  grid.appendChild(b);
+});
+
+montarRevelar();
+montarBarraFija({ barra: document.getElementById('compra-fija'), referencia: document.getElementById('cta') });
+montarCarrito({ contador: document.getElementById('carrito-n'), botones: [...document.querySelectorAll('[data-agregar]')] });
+
+const notaAR = document.getElementById('ar-nota');
+const ar = montarAR({
+  contenedor: document.getElementById('ar-slot'),
+  modelo: { blanco: { glb: './3d/models/ropero-bariloche-blanco.glb', usdz: './3d/models/ropero-bariloche-blanco.usdz' } },
+  titulo: 'Ropero Bariloche 3 puertas corredizas',
+  clase: 'btn btn--linea',
+  alSinSoporte: () => {
+    notaAR.innerHTML = '<b>&iquest;Entra en tu pared?</b> Abri esta pagina desde el celular ' +
+      'para apoyar el ropero en tu cuarto con la camara, a tamano real.';
+  }
+});
+if (ar.plataforma) {
+  notaAR.textContent = 'Se abre la camara y podes apoyar el ropero en el piso de tu cuarto, a tamano real.';
+}
+
+// La vista 3D carga three.js recien cuando la piden: son unos 600 KB.
+const tabFotos = document.getElementById('tab-fotos');
+const tab3d = document.getElementById('tab-3d');
+const barra3d = document.getElementById('barra-3d');
+const cargando = document.getElementById('cargando-3d');
+let api3d = null;
+
+function activar(es3d) {
+  tab3d.setAttribute('aria-selected', String(es3d));
+  tabFotos.setAttribute('aria-selected', String(!es3d));
+  document.getElementById('panel-3d').hidden = !es3d;
+  document.getElementById('panel-fotos').hidden = es3d;
+  barra3d.hidden = !es3d;
+  document.getElementById('miniaturas').hidden = es3d;
+}
+
+tabFotos.addEventListener('click', () => activar(false));
+tab3d.addEventListener('click', async () => {
+  activar(true);
+  if (api3d) { api3d.vistaInicial(); return; }
+  try {
+    const { initBariloche } = await import('./3d/ropero-bariloche.js');
+    api3d = await initBariloche(
+      document.querySelector('three-d-stage'),
+      document.getElementById('abrir-puertas')
+    );
+    cargando.remove();
+    document.getElementById('vista-frontal').addEventListener('click', api3d.vistaFrontal);
+    document.getElementById('vista-34').addEventListener('click', api3d.vistaInicial);
+  } catch (e) {
+    cargando.innerHTML = '<span>No se pudo cargar la vista 3D. Proba recargar la pagina.</span>';
+    console.error(e);
+  }
+});
+</script>
+</body>
+</html>
