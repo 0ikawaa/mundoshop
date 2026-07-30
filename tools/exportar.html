@@ -31,9 +31,12 @@ code { background:#eef0f7; padding:1px 5px; border-radius:3px; }
 <p class="lead">
   Genera el <code>.glb</code> (Android / Scene Viewer) y el <code>.usdz</code>
   (iPhone / AR Quick Look) de cada producto y color, y los deja en
-  <code>3d/models/</code> a traves del servidor de desarrollo. Salen con las
-  puertas cerradas y sin contenido interior: en AR se mira el mueble contra la
-  pared, y la ropa solo suma peso al archivo.
+  <code>3d/models/</code> a traves del servidor de desarrollo. De cada uno salen
+  dos versiones, <b>cerrado</b> y <b>abierto</b> (<code>-abierto</code>), porque
+  los visores de AR del sistema no reciben toques sobre el modelo: para apoyar
+  el mueble abierto en el cuarto hay que mandarles otro archivo. Los dos van sin
+  contenido interior — la ropa solo suma peso a algo que se baja por datos
+  moviles.
 </p>
 
 <button id="run" type="button">Generar todos</button>
@@ -60,6 +63,29 @@ const PRODUCTOS = [
 // archivo se baja por datos moviles para mirarlo a un metro de distancia.
 setBisel(0);
 
+/**
+ * Saca los mapas de normales antes de exportar. Misma logica que el bisel: el
+ * relieve de la veta y la ondulacion de la laca son para mirar el mueble de
+ * cerca en la pantalla, no a un metro y medio a traves de la camara de un
+ * celular.
+ *
+ * Lo que cuestan, medido en este mismo exportador: el GLB del Berlim pasa de
+ * 792 a 1320 KB y el del Florencia de 1105 a 2129 KB. Son mapas embebidos como
+ * PNG dentro del archivo, y se duplican por color porque cada material lleva
+ * el suyo. Medio mega por cada persona que toca "Ver en tu ambiente" es mucho
+ * a cambio de un relieve que a esa distancia no se ve.
+ */
+function sinMapasDeRelieve(grupo) {
+  const vistos = new Set();
+  grupo.traverse((o) => {
+    for (const m of [].concat(o.material || [])) {
+      if (!m || vistos.has(m)) continue;
+      vistos.add(m);
+      if (m.normalMap) { m.normalMap = null; m.needsUpdate = true; }
+    }
+  });
+}
+
 const logEl = document.getElementById('log');
 const btn = document.getElementById('run');
 let lineas = [];
@@ -83,28 +109,40 @@ btn.addEventListener('click', async () => {
   log('Generando…\n');
   let total = 0;
 
+  // Cada color sale dos veces. El sufijo vacio es el mueble cerrado, que es a
+  // lo que apunta el boton de AR mientras las puertas esten cerradas en la
+  // ficha; `-abierto` es el que se manda cuando el visitante ya las abrio.
+  const VERSIONES = [
+    { sufijo: '', abierto: false },
+    { sufijo: '-abierto', abierto: true },
+  ];
+
   for (const prod of PRODUCTOS) {
     log(prod.base, 'tit');
     for (const color of prod.colores) {
-      try {
-        const { grupo } = prod.construir(THREE, { color, contenido: false });
+      for (const v of VERSIONES) {
+        const nombre = `${prod.base}-${color}${v.sufijo}`;
+        try {
+          const { grupo } = prod.construir(THREE, { color, contenido: false, abierto: v.abierto });
+          sinMapasDeRelieve(grupo);
 
-        // USDZExporter descarta en silencio las mallas con array de materiales.
-        let multi = 0;
-        grupo.traverse(o => { if (o.isMesh && Array.isArray(o.material)) multi++; });
-        if (multi) log(`  AVISO: ${multi} mallas con array de materiales — no salen en el USDZ`, 'err');
+          // USDZExporter descarta en silencio las mallas con array de materiales.
+          let multi = 0;
+          grupo.traverse(o => { if (o.isMesh && Array.isArray(o.material)) multi++; });
+          if (multi) log(`  AVISO: ${multi} mallas con array de materiales — no salen en el USDZ`, 'err');
 
-        const glb = await new GLTFExporter().parseAsync(grupo, { binary: true });
-        const nGlb = await guardar(`${prod.base}-${color}.glb`, glb);
+          const glb = await new GLTFExporter().parseAsync(grupo, { binary: true });
+          const nGlb = await guardar(`${nombre}.glb`, glb);
 
-        const usdz = await new USDZExporter().parseAsync(grupo, { quickLookCompatible: true });
-        const nUsdz = await guardar(`${prod.base}-${color}.usdz`, usdz);
+          const usdz = await new USDZExporter().parseAsync(grupo, { quickLookCompatible: true });
+          const nUsdz = await guardar(`${nombre}.usdz`, usdz);
 
-        log(`  ${color.padEnd(9)} glb ${kb(nGlb).padStart(8)}   usdz ${kb(nUsdz).padStart(8)}`, 'ok');
-        total += 2;
-      } catch (e) {
-        log(`  ${color}: FALLO — ${e.message}`, 'err');
-        console.error(e);
+          log(`  ${(color + v.sufijo).padEnd(17)} glb ${kb(nGlb).padStart(8)}   usdz ${kb(nUsdz).padStart(8)}`, 'ok');
+          total += 2;
+        } catch (e) {
+          log(`  ${nombre}: FALLO — ${e.message}`, 'err');
+          console.error(e);
+        }
       }
     }
   }

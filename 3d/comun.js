@@ -360,10 +360,37 @@ export function ambienteDormitorio(THREE, stage, intensidad = 0.22) {
 }
 
 /**
+ * Cuanto abre una hoja batiente. No son 90 grados: a 90 la hoja queda
+ * perpendicular y tapa la del modulo de al lado. Con 105 se corre lo justo
+ * para dejar ver el interior entero.
+ *
+ * Es un solo numero y lo usan dos caminos que tienen que coincidir: la
+ * animacion del visor y el modelo abierto que se exporta para AR. Si se
+ * separaran, el mueble se abriria de una manera en la pantalla y de otra en el
+ * cuarto.
+ */
+export const GRADOS_APERTURA = 105;
+
+/**
+ * Deja las hojas batientes abiertas de una, sin animar: es el fotograma final
+ * de `animarBatientes`. Lo usa el exportador de AR, donde no hay tiempo que
+ * correr — el archivo sale ya abierto.
+ */
+export function abrirBatientes(THREE, hojas, grados = GRADOS_APERTURA) {
+  const a = THREE.MathUtils.degToRad(grados);
+  for (const h of hojas) h.g.rotation.y = h.dir * a;
+}
+
+/** Lo mismo para corredizas: cada hoja saltada a su posicion abierta. */
+export function abrirCorredizas(hojas) {
+  for (const h of hojas) h.g.position.x = h.abierta;
+}
+
+/**
  * Puertas batientes: cada hoja gira sobre su eje, escalonadas del centro hacia
  * afuera. `hojas` son { g, dir, orden } como las arma cada modelo.
  */
-export function animarBatientes(THREE, hojas, { grados = 105, dur = 1050, paso = 90 } = {}) {
+export function animarBatientes(THREE, hojas, { grados = GRADOS_APERTURA, dur = 1050, paso = 90 } = {}) {
   const ABIERTO = THREE.MathUtils.degToRad(grados);
   let anim = null;
   return function setPuertas(abrir, alTerminar) {

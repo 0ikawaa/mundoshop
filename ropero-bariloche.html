@@ -395,7 +395,16 @@ montarCarrito({ contador: document.getElementById('carrito-n'), botones: [...doc
 const notaAR = document.getElementById('ar-nota');
 const ar = montarAR({
   contenedor: document.getElementById('ar-slot'),
-  modelo: { blanco: { glb: './3d/models/ropero-bariloche-blanco.glb', usdz: './3d/models/ropero-bariloche-blanco.usdz' } },
+  modelo: {
+    blanco: {
+      glb: './3d/models/ropero-bariloche-blanco.glb',
+      usdz: './3d/models/ropero-bariloche-blanco.usdz',
+      abierto: {
+        glb: './3d/models/ropero-bariloche-blanco-abierto.glb',
+        usdz: './3d/models/ropero-bariloche-blanco-abierto.usdz'
+      }
+    }
+  },
   titulo: 'Ropero Bariloche 3 puertas corredizas',
   clase: 'btn btn--linea',
   alSinSoporte: () => {
@@ -403,9 +412,17 @@ const ar = montarAR({
       'para apoyar el ropero en tu cuarto con la camara, a tamano real.';
   }
 });
-if (ar.plataforma) {
-  notaAR.textContent = 'Se abre la camara y podes apoyar el ropero en el piso de tu cuarto, a tamano real.';
+/* El AR se apoya como lo estes mirando: si corres las puertas en la Vista 3D,
+   el mueble aparece abierto en tu cuarto. Es otro archivo, no una opcion del
+   visor de AR — Quick Look y Scene Viewer no reciben toques sobre el modelo. */
+const NOTA_AR = {
+  cerrado: 'Se abre la camara y podes apoyar el ropero en el piso de tu cuarto, a tamano real.',
+  abierto: 'Se apoya con las puertas corridas, como lo estas viendo. Cerralas arriba si lo queres cerrado.'
+};
+function notaSegunPuertas(abierto) {
+  if (ar.plataforma) notaAR.textContent = abierto ? NOTA_AR.abierto : NOTA_AR.cerrado;
 }
+notaSegunPuertas(false);
 
 // La vista 3D carga three.js recien cuando la piden: son unos 600 KB.
 const tabFotos = document.getElementById('tab-fotos');
@@ -431,7 +448,8 @@ tab3d.addEventListener('click', async () => {
     const { initBariloche } = await import('./3d/ropero-bariloche.js');
     api3d = await initBariloche(
       document.querySelector('three-d-stage'),
-      document.getElementById('abrir-puertas')
+      document.getElementById('abrir-puertas'),
+      (abierto) => { ar.setAbierto(abierto); notaSegunPuertas(abierto); }
     );
     cargando.remove();
     document.getElementById('vista-frontal').addEventListener('click', api3d.vistaFrontal);

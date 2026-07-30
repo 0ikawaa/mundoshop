@@ -12,14 +12,14 @@
 
 import {
   rng, texturaMadera, texturaGrano, hacerCaja, mapaNormal, texturaCascara,
-  encuadrador, ambienteDormitorio, animarCorredizas, materialEspejo
+  encuadrador, ambienteDormitorio, animarCorredizas, abrirCorredizas, materialEspejo
 } from './comun.js';
 
 export const MEDIDAS = { W: 1.80, H: 1.80, D: 0.45 };
 export const COLORES = { blanco: { hex: 0xf4f3f0, rough: 0.5, nombre: 'Blanco' } };
 
 export function construirBariloche(THREE, opciones = {}) {
-  const { contenido = true, semilla = 20260731 } = opciones;
+  const { contenido = true, abierto = false, semilla = 20260731 } = opciones;
   const rand = rng(semilla);
 
   const { W, H, D } = MEDIDAS;
@@ -229,6 +229,11 @@ export function construirBariloche(THREE, opciones = {}) {
     { g: pDer, cerrada: dx, abierta: dx - doorW + 0.018 }
   ];
 
+  // Para AR: las dos hojas laterales ya corridas detras de la del espejo. Aca
+  // no hay placa de juntas que ocultar — en corredizas la ranura muestra la
+  // hoja del otro riel, no el interior.
+  if (abierto) abrirCorredizas(hojas);
+
   return {
     grupo: ropero, mats: mat, hojas, mallaEspejo,
     setColor: () => true,          // este modelo se vende solo en blanco
@@ -236,7 +241,8 @@ export function construirBariloche(THREE, opciones = {}) {
   };
 }
 
-export async function initBariloche(stage, btn) {
+/** `alCambiar(abierto)` — ver la nota en initRoperoBerlim. */
+export async function initBariloche(stage, btn, alCambiar) {
   const { THREE } = await stage.ready;
   const { grupo, hojas, mallaEspejo } = construirBariloche(THREE);
   const { H } = MEDIDAS;
@@ -247,6 +253,7 @@ export async function initBariloche(stage, btn) {
     abierto = !abierto;
     setPuertas(abierto);
     if (btn) btn.textContent = abierto ? 'Cerrar puertas' : 'Abrir puertas';
+    if (alCambiar) alCambiar(abierto);
     return abierto;
   }
   if (btn) btn.addEventListener('click', toggle);

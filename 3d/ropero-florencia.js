@@ -15,14 +15,14 @@
 
 import {
   rng, texturaMadera, texturaGrano, hacerCaja, mapaNormal, texturaCascara,
-  encuadrador, ambienteDormitorio, animarBatientes
+  encuadrador, ambienteDormitorio, animarBatientes, abrirBatientes
 } from './comun.js';
 
 export const MEDIDAS = { W: 1.80, H: 2.00, D: 0.47 };
 export const COLORES = { beige: { hex: 0xb08758, rough: 0.55, nombre: 'Beige' } };
 
 export function construirFlorencia(THREE, opciones = {}) {
-  const { contenido = true, semilla = 20260732 } = opciones;
+  const { contenido = true, abierto = false, semilla = 20260732 } = opciones;
   const rand = rng(semilla);
 
   const { W, H, D } = MEDIDAS;
@@ -267,10 +267,18 @@ export function construirFlorencia(THREE, opciones = {}) {
     hojas.push({ g, dir: izq ? -1 : 1, orden: Math.abs(i - 2.5) });
   }
 
+  // Para AR: nace abierto y sin la placa de juntas, que con las hojas corridas
+  // quedaria delante del interior.
+  if (abierto) {
+    abrirBatientes(THREE, hojas);
+    junta.visible = false;
+  }
+
   return { grupo: ropero, mats: mat, hojas, junta, setColor: () => true, medidas: { W, H, D } };
 }
 
-export async function initFlorencia(stage, btn) {
+/** `alCambiar(abierto)` — ver la nota en initRoperoBerlim. */
+export async function initFlorencia(stage, btn, alCambiar) {
   const { THREE } = await stage.ready;
   const { grupo, hojas, junta } = construirFlorencia(THREE);
   const { H } = MEDIDAS;
@@ -286,6 +294,7 @@ export async function initFlorencia(stage, btn) {
     abierto = !abierto;
     setPuertas(abierto);
     if (btn) btn.textContent = abierto ? 'Cerrar puertas' : 'Abrir puertas';
+    if (alCambiar) alCambiar(abierto);
     return abierto;
   }
   if (btn) btn.addEventListener('click', toggle);

@@ -14,7 +14,10 @@
  * como mallas aparte en vez de como una cara distinta del mismo box.
  */
 
-import { geometriaCaja, mapaNormal, texturaCascara, ambienteDormitorio } from './comun.js';
+import {
+  geometriaCaja, mapaNormal, texturaCascara, ambienteDormitorio,
+  abrirBatientes, GRADOS_APERTURA
+} from './comun.js';
 
 export const MEDIDAS = { W: 2.06, H: 1.99, D: 0.385 };
 
@@ -40,6 +43,7 @@ export function construirRopero(THREE, opciones = {}) {
   const {
     color = 'negro',
     contenido = true,      // ropa, cajas y almohadas: se omiten para AR
+    abierto = false,       // sale con las puertas ya abiertas (modelo de AR)
     semilla = 20260730
   } = opciones;
 
@@ -337,6 +341,15 @@ export function construirRopero(THREE, opciones = {}) {
     puertas.push({ g, hoja, dir: izq ? -1 : 1, orden: Math.abs(i - 3.5) });
   }
 
+  // Para AR: el modelo nace abierto y la placa de juntas se va. Esa placa esta
+  // para que las ranuras entre hojas se lean como lineas oscuras con el mueble
+  // cerrado; con las puertas abiertas queda delante del interior y lo tapa
+  // justo cuando se lo quiere mostrar.
+  if (abierto) {
+    abrirBatientes(THREE, puertas);
+    junta.visible = false;
+  }
+
   function setColor(nombre) {
     const c = COLORES[nombre];
     if (!c) return false;
@@ -350,13 +363,19 @@ export function construirRopero(THREE, opciones = {}) {
 }
 
 /** Visor de la ficha de producto: modelo + animacion de puertas + encuadre. */
-export async function initRoperoBerlim(stage, btn) {
+/**
+ * `alCambiar(abierto)` se llama en cada toque del boton. Existe para que la
+ * ficha no tenga que llevar su propio booleano de puertas en paralelo a este:
+ * dos estados para una sola cosa se separan en cuanto alguien toca uno de los
+ * dos caminos, y el de AR terminaria apuntando al archivo equivocado.
+ */
+export async function initRoperoBerlim(stage, btn, alCambiar) {
   const { THREE } = await stage.ready;
   const { grupo: ropero, puertas, junta, setColor } = construirRopero(THREE);
   const { H } = MEDIDAS;
 
   // ——————————————————————————— apertura animada
-  const OPEN = THREE.MathUtils.degToRad(105);
+  const OPEN = THREE.MathUtils.degToRad(GRADOS_APERTURA);
   let abierto = false, anim = null;
 
   function setDoors(open) {
@@ -383,6 +402,7 @@ export async function initRoperoBerlim(stage, btn) {
     abierto = !abierto;
     setDoors(abierto);
     if (btn) btn.textContent = abierto ? 'Cerrar puertas' : 'Abrir puertas';
+    if (alCambiar) alCambiar(abierto);
     return abierto;
   }
   if (btn) btn.addEventListener('click', toggle);

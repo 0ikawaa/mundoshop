@@ -190,11 +190,46 @@ que se vea del tamano que realmente tiene.
 `vercel.json` fuerza `model/vnd.usdz+zip` y `model/gltf-binary`: con el
 content-type equivocado Quick Look no abre.
 
+### Abierto o cerrado
+
+El mueble se apoya en el cuarto **como se lo este mirando en la ficha**: si el
+visitante abrio las puertas en la Vista 3D y despues toca "Ver en tu ambiente",
+aparece abierto.
+
+Son dos archivos, no una opcion del visor. Quick Look y Scene Viewer son visores
+del sistema operativo: reciben un archivo, lo apoyan en el piso y dejan girarlo,
+pero **no hay manera de mandarles un toque sobre una parte del modelo** ni de
+pedirles que reproduzcan algo a demanda. Lo unico que se puede elegir es cual de
+los dos archivos abrir, y eso se decide antes de salir de la pagina. De ahi el
+par `nombre.glb` / `nombre-abierto.glb` de cada producto y color.
+
+El estado de las puertas vive en un solo lugar: el modulo del producto avisa por
+`alCambiar(abierto)` y la ficha reenvia eso a `ar.setAbierto()`. La alternativa
+—que la ficha lleve su propio booleano escuchando el mismo boton— son dos
+estados para una sola cosa, y el de AR terminaria apuntando al archivo
+equivocado en cuanto alguno de los dos caminos cambie.
+
+El angulo de apertura es uno solo, `GRADOS_APERTURA` en `comun.js`, y lo comparten
+la animacion del visor y el modelo que se exporta. Si se separaran, el mueble se
+abriria de una manera en la pantalla y de otra en el cuarto.
+
 ### Regenerar los modelos
 
 Los `.glb` / `.usdz` de `3d/models/` se generan en el navegador y se commitean.
-Salen con las puertas cerradas y sin contenido interior — en AR se mira el mueble
-contra la pared, y la ropa solo suma peso.
+De cada producto y color salen cuatro archivos: cerrado y abierto, en los dos
+formatos.
+
+Tres cosas se sacan a proposito antes de exportar, todas por el mismo motivo —
+el archivo se baja por datos moviles para mirarlo a un metro y medio a traves de
+la camara de un telefono:
+
+- **el contenido interior** (ropa, cajas, almohadas), que solo suma peso;
+- **el bisel de los cantos**, que multiplica por treinta y cinco los triangulos
+  de cada caja;
+- **los mapas de normales** de la veta y la laca. Medido en el propio
+  exportador: con ellos el GLB del Berlim pasa de 733 a 1320 KB y el del
+  Florencia de 957 a 2129 KB, porque van embebidos como PNG y cada material
+  lleva el suyo. Medio mega de relieve que a esa distancia no se ve.
 
 ```bash
 node tools/servidor.js

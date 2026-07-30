@@ -45,15 +45,33 @@ function urlSceneViewer(glb, titulo) {
 
 /**
  * Monta el control de AR dentro de `contenedor`.
- * Devuelve { plataforma, setColor } — setColor cambia a que archivo apunta.
+ *
+ * `modelo` es { color: { glb, usdz, abierto?: { glb, usdz } } }. El par de
+ * arriba es el mueble cerrado y `abierto` el mismo mueble con las puertas ya
+ * corridas.
+ *
+ * Por que dos archivos y no uno que se abra: Quick Look y Scene Viewer son
+ * visores del sistema operativo. Reciben un archivo, lo apoyan en el piso y
+ * dejan girarlo, pero no hay manera de mandarles un toque sobre una parte del
+ * modelo ni de pedirles que reproduzcan algo a demanda. Lo unico que se puede
+ * elegir es cual de los dos archivos se abre, y eso se decide antes de salir
+ * de la pagina.
+ *
+ * Devuelve { plataforma, setColor, setAbierto } — los dos setters cambian a
+ * que archivo apunta el link.
  */
 export function montarAR({ contenedor, modelo, titulo = '', clase = '', alSinSoporte }) {
   const plataforma = plataformaAR();
   let color = Object.keys(modelo)[0];
+  let abierto = false;
 
   if (!plataforma) {
     if (alSinSoporte) alSinSoporte(contenedor);
-    return { plataforma: null, setColor: (c) => { color = c; } };
+    return {
+      plataforma: null,
+      setColor: (c) => { color = c; },
+      setAbierto: (a) => { abierto = a; },
+    };
   }
 
   const etiqueta = 'Ver en tu ambiente';
@@ -78,13 +96,27 @@ export function montarAR({ contenedor, modelo, titulo = '', clase = '', alSinSop
   control.className = clase;
   contenedor.appendChild(control);
 
+  function actualizar() {
+    const m = modelo[color];
+    // Si un producto todavia no tiene exportado el par abierto, cae al cerrado
+    // en vez de apuntar a un 404.
+    const archivos = (abierto && m.abierto) ? m.abierto : m;
+    control.href = plataforma === 'ios'
+      ? urlAbsoluta(archivos.usdz) + '#allowsContentScaling=0'
+      : urlSceneViewer(archivos.glb, titulo);
+  }
+
   function setColor(c) {
     if (modelo[c]) color = c;
-    control.href = plataforma === 'ios'
-      ? urlAbsoluta(modelo[color].usdz) + '#allowsContentScaling=0'
-      : urlSceneViewer(modelo[color].glb, titulo);
+    actualizar();
   }
-  setColor(color);
 
-  return { plataforma, setColor, control };
+  function setAbierto(a) {
+    abierto = !!a;
+    actualizar();
+  }
+
+  actualizar();
+
+  return { plataforma, setColor, setAbierto, control };
 }
