@@ -4,6 +4,9 @@ Sitio estatico: fichas de producto estilo marketplace con un visor 3D interactiv
 construido en [three.js](https://threejs.org/). Todo se sirve como archivos planos,
 sin build ni dependencias de servidor.
 
+![Visor 3D: abri las puertas del ropero y mirá el interior](./docs/visor-3d.gif)
+
+
 ## Estructura
 
 ```
